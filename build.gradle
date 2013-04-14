@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'jetty'
+
+repositories {
+        mavenCentral()
+    }
+
+
+dependencies{
+	compile('javax.servlet:servlet-api:3.0-alpha-1')
+}
