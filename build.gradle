@@ -8,5 +8,9 @@ repositories {
 
 
 dependencies{
-	compile('javax.servlet:servlet-api:3.0-alpha-1')
+	compile('javax.servlet:servlet-api:3.0-alpha-1','org.apache.velocity:velocity:1.6.2',files('lib/IOC-gradle.jar'))
+}
+
+jettyRun{
+    classpath:"build/classes/main/"
 }
