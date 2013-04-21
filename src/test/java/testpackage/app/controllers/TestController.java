@@ -1,6 +1,7 @@
 package testpackage.app.controllers;
 
 import com.thoughtworks.mvc.annotation.Path;
+import com.thoughtworks.mvc.verb.HttpMethod;
 import core.annotation.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ public class TestController {
     public void action2(HttpServletRequest req, HttpServletResponse resp) {
     }
 
-    @Path("/action1/params")
+    @Path(value = "/action1", httpMethod = HttpMethod.POST)
     public void action3(HttpServletRequest req, HttpServletResponse resp) {
     }
 }

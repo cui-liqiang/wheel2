@@ -1,10 +1,9 @@
 package com.thoughtworks.mvc.core;
 
+import com.thoughtworks.mvc.verb.HttpMethod;
 import core.IocContainer;
 import core.IocContainerBuilder;
-import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
-import org.apache.velocity.context.Context;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -16,7 +15,7 @@ import java.util.Properties;
 
 public class Dispatcher extends HttpServlet {
     IocContainer container;
-    Map<String,ActionDescriptor> mapping;
+    Map<UrlAndVerb,ActionDescriptor> mapping;
 
     @Override
     public void init() throws ServletException {
@@ -45,8 +44,17 @@ public class Dispatcher extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String url = getNormalizedUrlWithoutContextPath(req);
-        ActionDescriptor actionDescriptor = mapping.get(url);
+        dispatch(req, resp, HttpMethod.GET);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatch(req, resp, HttpMethod.POST);
+    }
+
+    private void dispatch(HttpServletRequest req, HttpServletResponse resp, HttpMethod method) throws IOException, ServletException {
+        String url = req.getRequestURI().substring(req.getContextPath().length());
+        ActionDescriptor actionDescriptor = mapping.get(new UrlAndVerb(method,url));
         resp.setContentType("text/html");
 
         if(actionDescriptor == null) {
@@ -61,12 +69,4 @@ public class Dispatcher extends HttpServlet {
         }
     }
 
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);    //To change body of overridden methods use File | Settings | File Templates.
-    }
-
-    private String getNormalizedUrlWithoutContextPath(HttpServletRequest req) {
-        return req.getRequestURI().substring(req.getContextPath().length());
-    }
 }
