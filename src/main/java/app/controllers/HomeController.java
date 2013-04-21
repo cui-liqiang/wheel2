@@ -1,5 +1,6 @@
 package app.controllers;
 
+import app.domains.Person;
 import com.thoughtworks.mvc.annotation.Path;
 import com.thoughtworks.mvc.core.BaseController;
 import com.thoughtworks.mvc.verb.HttpMethod;
@@ -7,12 +8,14 @@ import core.annotation.Component;
 import core.scopes.Prototype;
 
 import java.io.IOException;
+import java.util.Map;
 
 @Path("/home")
 @Component
 @Prototype
 public class HomeController extends BaseController{
     private String name;
+    private Person person;
 
     @Path("/")
     public void index(){
@@ -23,7 +26,9 @@ public class HomeController extends BaseController{
     }
 
     @Path(value = "/", httpMethod = HttpMethod.POST)
-    public void handleSubmit() throws IOException {
-        redirect("/home/success");
+    public void handleSubmit() throws Exception {
+        person = toObject(Person.class, (Map)params.get("person"));
+
+        render("success");
     }
 }

@@ -1,1 +1,4 @@
-your submission is success!
+your submission is success! <br />
+your information: <br />
+name : $person.name <br />
+age : $person.age
