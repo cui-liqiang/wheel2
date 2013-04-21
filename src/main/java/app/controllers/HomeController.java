@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletResponse;
 @Path("/home")
 @Component
 public class HomeController {
+    private String name;
+
     @Path("/")
     public void index(HttpServletRequest req, HttpServletResponse resp){
-        req.setAttribute("name", "cui li qiang");
+        name = "cui li qiang";
     }
 }

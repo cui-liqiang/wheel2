@@ -1,33 +1,31 @@
 package com.thoughtworks.mvc.core;
 
-import app.controllers.HomeController;
 import core.IocContainer;
 import core.IocContainerBuilder;
-import org.apache.commons.lang.StringUtils;
-import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.Velocity;
 import org.apache.velocity.context.Context;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Method;
-import java.util.Enumeration;
+import java.util.Map;
 import java.util.Properties;
 
 public class Dispatcher extends HttpServlet {
     IocContainer container;
-
-    public Dispatcher() throws Exception {
-        container = new IocContainerBuilder().withPackageName("app.controllers").build();
-    }
+    Map<String,ActionDescriptor> mapping;
 
     @Override
     public void init() throws ServletException {
+        try {
+            container = new IocContainerBuilder().withPackageName("app.controllers").build();
+        } catch (Exception e) {
+            throw new ServletException("init ioc container fail", e);
+        }
+
         String absoluteRootPath = this.getServletContext().getRealPath("/");
 
         Properties properties = new Properties();
@@ -35,50 +33,34 @@ public class Dispatcher extends HttpServlet {
         try {
             Velocity.init(properties);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new ServletException("init template engine config fail", e);
+        }
+
+        try {
+            mapping = new RouterScanner().scan("");
+        } catch (Exception e) {
+            throw new ServletException("init router fail", e);
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String controllerName = null;
-        String methodName = null;
-        Template template = null;
+        String url = getNormalizedUrlWithoutContextPath(req);
+        ActionDescriptor actionDescriptor = mapping.get(url);
 
-        if(req.getRequestURI().endsWith("/home")){
-            String tplName;
-            controllerName = "app.controllers." + StringUtils.capitalize("home") + "Controller";
-            methodName = "index";
-            tplName = "home" + "/" + methodName + ".vm";
-            try {
-                template = Velocity.getTemplate(tplName);
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new ServletException("error in looking for view template: " + tplName);
-            }
-        }
-
-        try {
-            Object controller = container.getBean(Class.forName(controllerName));
-            Method method = Class.forName(controllerName).getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
-            method.invoke(controller, req, resp);
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(actionDescriptor == null) {
+            resp.sendError(404);
             return;
         }
 
         try {
-            Context context = new VelocityContext();
-            Enumeration attributeNames = req.getAttributeNames();
-            while(attributeNames.hasMoreElements()) {
-                String name = (String)attributeNames.nextElement();
-                context.put(name, req.getAttribute(name));
-            }
-            template.merge(context, resp.getWriter());
-            resp.getWriter().flush();
+            actionDescriptor.exec(req, resp, container);
         } catch (Exception e) {
-            e.printStackTrace();
-            return;
+            throw new ServletException("error in handling url \"" + url + "\"", e);
         }
+    }
+
+    private String getNormalizedUrlWithoutContextPath(HttpServletRequest req) {
+        return req.getRequestURI().substring(req.getContextPath().length());
     }
 }
