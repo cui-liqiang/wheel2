@@ -32,7 +32,7 @@ public class RouterScannerTest {
         Map<String,ActionDescriptor> mapping = scanner.scan("testpackage");
 
         Method action = TestController.class.getMethod("action1", HttpServletRequest.class, HttpServletResponse.class);
-        ActionDescriptor expectedDescriptor = new ActionDescriptor(TestController.class, action, template);
+        ActionDescriptor expectedDescriptor = new ActionDescriptor(TestController.class, action);
         assertEquals(expectedDescriptor, mapping.get("/test/action1"));
     }
 }

@@ -47,6 +47,7 @@ public class Dispatcher extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String url = getNormalizedUrlWithoutContextPath(req);
         ActionDescriptor actionDescriptor = mapping.get(url);
+        resp.setContentType("text/html");
 
         if(actionDescriptor == null) {
             resp.sendError(404);
@@ -58,6 +59,11 @@ public class Dispatcher extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException("error in handling url \"" + url + "\"", e);
         }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        super.doPost(req, resp);    //To change body of overridden methods use File | Settings | File Templates.
     }
 
     private String getNormalizedUrlWithoutContextPath(HttpServletRequest req) {

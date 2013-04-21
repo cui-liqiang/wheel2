@@ -53,8 +53,7 @@ public class RouterScanner {
         for (Method method : filterWithPathAnnotation(controllerClass.getMethods())) {
             Path actionPathAnnotation = method.getAnnotation(Path.class);
 
-            Template template = templateRepo.getTemplate(extractControllerName(controller), method.getName());
-            ActionDescriptor descriptor = new ActionDescriptor(controllerClass, method, template);
+            ActionDescriptor descriptor = new ActionDescriptor(controllerClass, method);
             String url = actionPathAnnotation.value();
             mapping.put(baseUrl + url, descriptor);
             if(url.endsWith("/")) {

@@ -9,16 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ActionDescriptor {
     private final Class controllerClass;
     private final Method action;
-    private Template template;
 
-    public ActionDescriptor(Class controllerClass, Method action, Template template) {
+    public ActionDescriptor(Class controllerClass, Method action) {
         this.controllerClass = controllerClass;
         this.action = action;
-        this.template = template;
     }
 
     public void exec(HttpServletRequest req, HttpServletResponse resp, IocContainer container) throws Exception {
@@ -32,8 +32,19 @@ public class ActionDescriptor {
             context.put(field.getName(), field.get(bean));
         }
 
-        template.merge(context, resp.getWriter());
+        getTemplate().merge(context, resp.getWriter());
         resp.getWriter().flush();
+    }
+
+    private Template getTemplate() throws Exception {
+        return TemplateRepository.getInstance().getTemplate(extractControllerName(controllerClass.getName()), action.getName());
+    }
+
+    private String extractControllerName(String controller) {
+        Pattern pattern = Pattern.compile(".*\\.([A-Za-z]*)Controller");
+        Matcher matcher = pattern.matcher(controller);
+        matcher.matches();
+        return matcher.group(1).toLowerCase();
     }
 
     @Override
@@ -46,7 +57,6 @@ public class ActionDescriptor {
         if (action != null ? !action.equals(that.action) : that.action != null) return false;
         if (controllerClass != null ? !controllerClass.equals(that.controllerClass) : that.controllerClass != null)
             return false;
-        if (template != null ? !template.equals(that.template) : that.template != null) return false;
 
         return true;
     }
@@ -55,7 +65,6 @@ public class ActionDescriptor {
     public int hashCode() {
         int result = controllerClass != null ? controllerClass.hashCode() : 0;
         result = 31 * result + (action != null ? action.hashCode() : 0);
-        result = 31 * result + (template != null ? template.hashCode() : 0);
         return result;
     }
 }

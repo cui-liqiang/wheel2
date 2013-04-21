@@ -1,1 +1,10 @@
 welcome $name !
+
+
+<form id="myForm" method="post">
+    <input type="text" name="name[]" value="liqiang" />
+    <input type="text" name="name[]" value="liqiang1" />
+    <input type="text" name="name[]" value="liqiang2" />
+    <input type="text" name="age" value="13" />
+    <input type="submit" value="submit" />
+</form>
