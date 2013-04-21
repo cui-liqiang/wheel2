@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +16,7 @@ public class BaseController {
     private boolean rendered = false;
     private HttpServletRequest request;
     protected HttpServletResponse response;
+    private Map params;
 
     void setRequest(HttpServletRequest request) {
         this.request = request;
@@ -22,6 +24,10 @@ public class BaseController {
 
     void setResponse(HttpServletResponse response) {
         this.response = response;
+    }
+
+    public void setParams(Map params) {
+        this.params = params;
     }
 
     protected void render(String action) throws Exception {

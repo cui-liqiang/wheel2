@@ -10,10 +10,14 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 public class MockHttpServletRequest implements HttpServletRequest {
+    private Enumeration parameterNames;
+    private Map parameterPair = new HashMap<String, Object>();
+
     @Override
     public String getAuthType() {
         return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -176,12 +180,16 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getParameter(String name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return (String)parameterPair.get(name);
     }
 
     @Override
     public Enumeration getParameterNames() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return parameterNames;
+    }
+
+    public void setParameterNames(Enumeration parameterNames) {
+        this.parameterNames = parameterNames;
     }
 
     @Override
@@ -282,5 +290,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
     @Override
     public int getLocalPort() {
         return 0;  //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public void addParameterPair(String name, Object value) {
+        parameterPair.put(name, value);
     }
 }

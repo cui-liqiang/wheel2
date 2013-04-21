@@ -44,9 +44,10 @@ public class RouterScanner {
         Class controllerClass = Class.forName(controller);
         Assert(controllerClass.isAnnotationPresent(Path.class), "Controller class " + controllerClass + " doesn't have a @Path annotation");
 
-        Path classPathAnnotation = (Path)controllerClass.getAnnotation(Path.class);
-        String baseUrl = classPathAnnotation.value();
+        addMappingForEachAction(mapping, controllerClass, ((Path)controllerClass.getAnnotation(Path.class)).value());
+    }
 
+    private void addMappingForEachAction(Map<UrlAndVerb, ActionDescriptor> mapping, Class controllerClass, String baseUrl) {
         for (Method method : filterWithPathAnnotation(controllerClass.getMethods())) {
             Path actionPathAnnotation = method.getAnnotation(Path.class);
             ActionDescriptor descriptor = new ActionDescriptor(controllerClass, method);

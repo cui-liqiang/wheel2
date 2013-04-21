@@ -21,6 +21,7 @@ public class ActionDescriptor {
 
         controller.setRequest(req);
         controller.setResponse(resp);
+        controller.setParams(ParamsCreator.create(req));
 
         action.invoke(bean);
         controller.render(action.getName());
