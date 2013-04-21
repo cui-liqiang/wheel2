@@ -29,7 +29,7 @@ public class ActionDescriptorTest {
         TemplateRepository.setInstance(repo);
 
         actionDescriptor = new ActionDescriptor(TestController.class,
-                                                TestController.class.getMethod("action1", HttpServletRequest.class, HttpServletResponse.class));
+                                                TestController.class.getMethod("action1"));
         controllersContainer = new IocContainerBuilder().withPackageName("testpackage.app.controllers").build();
     }
 

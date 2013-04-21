@@ -1,18 +1,29 @@
 package app.controllers;
 
 import com.thoughtworks.mvc.annotation.Path;
+import com.thoughtworks.mvc.core.BaseController;
+import com.thoughtworks.mvc.verb.HttpMethod;
 import core.annotation.Component;
+import core.scopes.Prototype;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Path("/home")
 @Component
-public class HomeController {
+@Prototype
+public class HomeController extends BaseController{
     private String name;
 
     @Path("/")
-    public void index(HttpServletRequest req, HttpServletResponse resp){
-        name = "cui li qiang";
+    public void index(){
+    }
+
+    @Path("/success")
+    public void success(){
+    }
+
+    @Path(value = "/", httpMethod = HttpMethod.POST)
+    public void handleSubmit() throws IOException {
+        redirect("/home/success");
     }
 }

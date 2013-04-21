@@ -3,9 +3,6 @@ package com.thoughtworks.mvc.core;
 import org.apache.velocity.Template;
 import org.apache.velocity.app.Velocity;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class TemplateRepository {
     static TemplateRepository instance = null;
 

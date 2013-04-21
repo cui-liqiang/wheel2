@@ -1,9 +1,7 @@
 package com.thoughtworks.mvc.core;
 
 import com.google.common.base.Predicate;
-import com.thoughtworks.mvc.annotation.Get;
 import com.thoughtworks.mvc.annotation.Path;
-import com.thoughtworks.mvc.annotation.Post;
 import util.ClassPathUtil;
 
 import java.lang.reflect.Method;
