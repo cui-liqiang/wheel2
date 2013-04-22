@@ -1,8 +1,16 @@
 
 <form id="myForm" method="post">
-    <input type="text" name="person.name" value="" />
-    <input type="text" name="person.age" value="" />
-    <input type="text" name="person.phone.country" value="" />
-    <input type="text" name="person.phone.province" value="" />
+first guy:<br />
+    <input type="text" name="people[].name" value="" /> <br />
+    <input type="text" name="people[].age" value="" /> <br />
+    <input type="text" name="people[].phone.country" value="" /> <br />
+    <input type="text" name="people[].phone.province" value="" /> <br />
+
+second guy:<br />
+    <input type="text" name="people[].name" value="" /> <br />
+    <input type="text" name="people[].age" value="" /> <br />
+    <input type="text" name="people[].phone.country" value="" /> <br />
+    <input type="text" name="people[].phone.province" value="" /> <br />
+
     <input type="submit" value="submit" />
 </form>

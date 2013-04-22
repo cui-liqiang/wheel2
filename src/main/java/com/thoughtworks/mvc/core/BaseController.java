@@ -1,5 +1,6 @@
 package com.thoughtworks.mvc.core;
 
+import app.domains.Person;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
@@ -9,9 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.beans.PropertyEditor;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -91,7 +90,7 @@ public class BaseController {
         return matcher.group(1).toLowerCase();
     }
 
-    public <T> T toObject(Class<T> clazz, Map map) throws IllegalAccessException, InstantiationException, InvocationTargetException {
+    public <T> T toObject(Class<T> clazz, Map map) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchFieldException, ClassNotFoundException {
         T t = clazz.newInstance();
         if(map == null) return t;
 
@@ -107,12 +106,26 @@ public class BaseController {
                 obj = toSimpleObject(type, (String) value);
             } else if(value instanceof Map){
                 obj = toObject(type, (Map)value);
+            } else if(value instanceof List) {
+                ParameterizedType pt = (ParameterizedType)clazz.getDeclaredField(name).getGenericType();
+                // pt.getActualTypeArguments()[0].toString() will be "class #{some qualified name}", so 6 is to skip the leading "class "
+                obj = toList(Class.forName(pt.getActualTypeArguments()[0].toString().substring(6)), (List)value);
             }
 
             setter.invoke(t, obj);
         }
 
         return t;
+    }
+
+    public <T> List<T> toList(Class<T> clazz, List maps) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
+        List<T> list = new ArrayList<T>();
+
+        for (Object map : maps) {
+            list.add(toObject(clazz, (Map)map));
+        }
+
+        return list;
     }
 
     private Object toSimpleObject(Class<?> type, String value) throws IllegalAccessException, InstantiationException {
@@ -124,6 +137,7 @@ public class BaseController {
         return propertyEditor.getValue();
     }
 
+
     private List<Method> getSetters(Method[] allMethods) {
         List<Method> filtered = new ArrayList<Method>();
         for (Method method : allMethods) {
@@ -134,6 +148,4 @@ public class BaseController {
 
         return filtered;
     }
-
-
 }

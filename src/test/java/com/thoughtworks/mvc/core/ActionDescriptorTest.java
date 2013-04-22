@@ -7,12 +7,10 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import testpackage.app.controllers.TestController;
-import testutil.MockHttpServletRequest;
 import testutil.MockHttpServletResponse;
 import testutil.TemplateUtil;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -40,7 +38,7 @@ public class ActionDescriptorTest {
 
     @Test
     public void should_exec_action_and_assign_fields_to_velocity_context() throws Exception {
-        MockHttpServletRequest req = new MockHttpServletRequest();
+        HttpServletRequest req = mock(HttpServletRequest.class);
         MockHttpServletResponse resp = new MockHttpServletResponse();
 
         Template template = TemplateUtil.getTemplateFromString("Hello $name");
