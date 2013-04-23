@@ -7,6 +7,7 @@ import com.thoughtworks.mvc.verb.HttpMethod;
 import core.annotation.Component;
 import core.scopes.Prototype;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +31,9 @@ public class HomeController extends BaseController{
         person = toObject(Person.class, (Map)params.get("person"));
         List<Person> people = toList(Person.class, (List)params.get("people"));
 
-        render("success");
+        Map locals = new HashMap();
+        locals.put("people", people);
+
+        render("success", locals);
     }
 }

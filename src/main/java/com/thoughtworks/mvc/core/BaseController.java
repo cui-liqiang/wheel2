@@ -72,6 +72,27 @@ public class BaseController {
         }
     }
 
+    protected void render(String action, Map locals) throws Exception {
+        if(rendered) return;
+
+        try{
+            Context context = new VelocityContext();
+            for (Field field : this.getClass().getDeclaredFields()) {
+                field.setAccessible(true);
+                context.put(field.getName(), field.get(this));
+            }
+
+            for (Object key : locals.keySet()) {
+                context.put((String)key, locals.get(key));
+            }
+
+            getTemplate(action).merge(context, response.getWriter());
+            response.getWriter().flush();
+        } finally {
+            rendered = true;
+        }
+    }
+
     protected void redirect(String action) throws IOException {
         String contextPath = request.getContextPath();
         String realPath = contextPath.equals("") ? action : contextPath + action;
@@ -92,6 +113,7 @@ public class BaseController {
 
     public <T> T toObject(Class<T> clazz, Map map) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchFieldException, ClassNotFoundException {
         T t = clazz.newInstance();
+
         if(map == null) return t;
 
         List<Method> setters = getSetters(clazz.getMethods());
@@ -128,6 +150,7 @@ public class BaseController {
         return list;
     }
 
+
     private Object toSimpleObject(Class<?> type, String value) throws IllegalAccessException, InstantiationException {
         Class<? extends PropertyEditor> aClass = editorMap.get(type);
         if(aClass == null) return null;
@@ -136,7 +159,6 @@ public class BaseController {
         propertyEditor.setAsText(value);
         return propertyEditor.getValue();
     }
-
 
     private List<Method> getSetters(Method[] allMethods) {
         List<Method> filtered = new ArrayList<Method>();
