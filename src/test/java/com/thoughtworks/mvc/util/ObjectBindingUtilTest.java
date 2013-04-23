@@ -1,4 +1,4 @@
-package com.thoughtworks.mvc.core;
+package com.thoughtworks.mvc.util;
 
 import app.domains.Person;
 import org.junit.Test;
@@ -11,16 +11,14 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
-public class BaseControllerTest {
-    BaseController baseController = new BaseController();
-
+public class ObjectBindingUtilTest {
     @Test
     public void should_assign_values_to_object_from_map() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
         Map map = new HashMap();
         map.put("name", "liqiang");
         map.put("age", "13");
 
-        Person person = baseController.toObject(Person.class, map);
+        Person person = ObjectBindingUtil.toObject(Person.class, map);
 
         assertEquals("liqiang", person.getName());
         assertEquals(13, person.getAge());
@@ -39,7 +37,7 @@ public class BaseControllerTest {
 
         map.put("phone", phoneMap);
 
-        Person person = baseController.toObject(Person.class, map);
+        Person person = ObjectBindingUtil.toObject(Person.class, map);
 
         assertEquals("liqiang", person.getName());
         assertEquals(13, person.getAge());
@@ -65,7 +63,7 @@ public class BaseControllerTest {
         Map map = new HashMap();
         map.put("people", people);
 
-        List<Person> parsedPeople = baseController.toList(Person.class, (List) map.get("people"));
+        List<Person> parsedPeople = ObjectBindingUtil.toList(Person.class, (List) map.get("people"));
 
         assertEquals("liqiang", parsedPeople.get(0).getName());
         assertEquals(13, parsedPeople.get(0).getAge());
@@ -94,7 +92,7 @@ public class BaseControllerTest {
 
         map.put("phones", phones);
 
-        Person person = baseController.toObject(Person.class, map);
+        Person person = ObjectBindingUtil.toObject(Person.class, map);
 
         assertEquals(2, person.getPhones().size());
 

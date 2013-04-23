@@ -1,15 +1,23 @@
 
 <form id="myForm" method="post">
 first guy:<br />
+    name:
     <input type="text" name="people[].name" value="" /> <br />
+    age:
     <input type="text" name="people[].age" value="" /> <br />
+    phone.country
     <input type="text" name="people[].phone.country" value="" /> <br />
+    phone.province
     <input type="text" name="people[].phone.province" value="" /> <br />
 
 second guy:<br />
+    name:
     <input type="text" name="people[].name" value="" /> <br />
+    age:
     <input type="text" name="people[].age" value="" /> <br />
+    phone.country
     <input type="text" name="people[].phone.country" value="" /> <br />
+    phone.province
     <input type="text" name="people[].phone.province" value="" /> <br />
 
     <input type="submit" value="submit" />
