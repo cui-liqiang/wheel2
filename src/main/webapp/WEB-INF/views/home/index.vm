@@ -22,3 +22,9 @@ second guy:<br />
 
     <input type="submit" value="submit" />
 </form>
+
+
+<form id="myForm" action="/mvc/home/handle-and-redirect" method="post">
+    click button below to do redirection <br />
+    <input type="submit" value="submit" />
+</form>

@@ -34,4 +34,9 @@ public class HomeController extends BaseController{
 
         render("success", locals);
     }
+
+    @Path(value = "/handle-and-redirect", httpMethod = HttpMethod.POST)
+    public void handleAndRedirect() throws Exception {
+        redirect("/home/");
+    }
 }
