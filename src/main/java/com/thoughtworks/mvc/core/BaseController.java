@@ -1,19 +1,14 @@
 package com.thoughtworks.mvc.core;
 
-import app.domains.Person;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
-import sun.beans.editors.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.beans.PropertyEditor;
 import java.io.IOException;
-import java.lang.reflect.*;
-import java.util.ArrayList;
+import java.lang.reflect.Field;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,23 +32,14 @@ public class BaseController {
     }
 
     protected void render(String action) throws Exception {
-        if(rendered) return;
-
-        try{
-            Context context = new VelocityContext();
-            for (Field field : this.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                context.put(field.getName(), field.get(this));
-            }
-
-            getTemplate(action).merge(context, response.getWriter());
-            response.getWriter().flush();
-        } finally {
-            rendered = true;
-        }
+        doRender(action, new HashMap());
     }
 
     protected void render(String action, Map locals) throws Exception {
+        doRender(action, locals);
+    }
+
+    private void doRender(String action, Map locals) throws Exception {
         if(rendered) return;
 
         try{
