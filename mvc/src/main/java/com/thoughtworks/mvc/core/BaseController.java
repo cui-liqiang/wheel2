@@ -1,6 +1,7 @@
 package com.thoughtworks.mvc.core;
 
 import com.thoughtworks.mvc.core.param.Params;
+import com.thoughtworks.mvc.util.StringUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
@@ -11,8 +12,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class BaseController {
 
@@ -64,13 +63,8 @@ public class BaseController {
     }
 
     private Template getTemplate(String action) throws Exception {
-        return TemplateRepository.getInstance().getTemplate(extractControllerName(this.getClass().getName()), action);
+        String controller = StringUtil.extractControllerName(this.getClass().getName());
+        return TemplateRepository.getInstance().getTemplate(controller, action);
     }
 
-    private String extractControllerName(String controller) {
-        Pattern pattern = Pattern.compile(".*\\.([A-Za-z]*)Controller");
-        Matcher matcher = pattern.matcher(controller);
-        matcher.matches();
-        return matcher.group(1).toLowerCase();
-    }
 }

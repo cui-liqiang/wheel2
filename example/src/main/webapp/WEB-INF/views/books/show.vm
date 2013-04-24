@@ -1,0 +1,7 @@
+<h1>books show</h1>
+<dl>
+    <dt>id</dt>
+    <dd>$book.id</dd>
+    <dt>title</dt>
+    <dd>$book.title</dd>
+</dl>

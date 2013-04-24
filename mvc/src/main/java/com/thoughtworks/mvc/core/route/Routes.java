@@ -11,6 +11,10 @@ public class Routes {
 
     List<Route> routes = new ArrayList<Route>();
 
+    public void put(Route route) {
+        routes.add(route);
+    }
+
     public void put(UrlAndVerb urlAndVerb, ActionDescriptor descriptor) {
         routes.add(new Route(urlAndVerb, descriptor));
     }

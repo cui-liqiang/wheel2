@@ -2,17 +2,20 @@ package com.thoughtworks.mvc.core;
 
 import com.google.common.base.Predicate;
 import com.thoughtworks.mvc.annotation.Path;
+import com.thoughtworks.mvc.annotation.Resource;
+import com.thoughtworks.mvc.core.resource.Convention;
+import com.thoughtworks.mvc.core.resource.Conventions;
 import com.thoughtworks.mvc.core.route.Routes;
 import com.thoughtworks.mvc.core.urlAndVerb.UrlAndVerbFactory;
 import core.IocContainer;
 import util.ClassPathUtil;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 import static com.google.common.collect.Collections2.filter;
-import static util.AssertUtil.Assert;
-
 
 public class RouterScanner {
     TemplateRepository templateRepo = new TemplateRepository();
@@ -49,10 +52,13 @@ public class RouterScanner {
 
     private void addMappingsFromControllerTo(String controller, Routes routes) throws Exception {
         Class controllerClass = Class.forName(controller);
-        Assert(controllerClass.isAnnotationPresent(Path.class), "Controller class " + controllerClass + " doesn't have a @Path annotation");
-
         container.register(controllerClass, true);
-        addMappingForEachAction(routes, controllerClass, ((Path) controllerClass.getAnnotation(Path.class)).value());
+
+        if (controllerClass.isAnnotationPresent(Path.class)) {
+            addMappingForEachAction(routes, controllerClass, ((Path) controllerClass.getAnnotation(Path.class)).value());
+        } else if (controllerClass.isAnnotationPresent(Resource.class)) {
+            addMappingForResource(routes, controllerClass);
+        }
     }
 
     private void addMappingForEachAction(Routes routes, Class controllerClass, String baseUrl) {
@@ -70,5 +76,11 @@ public class RouterScanner {
             }
         }
         return forReturn;
+    }
+
+    private void addMappingForResource(Routes routes, Class controllerClass) {
+        for (Convention convention : Conventions.all()) {
+            routes.put(convention.createRoute(controllerClass));
+        }
     }
 }
