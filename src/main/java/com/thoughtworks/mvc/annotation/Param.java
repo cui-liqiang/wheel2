@@ -8,6 +8,6 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Retention(RUNTIME)
 @Target({PARAMETER})
-public @interface ParamKey {
+public @interface Param {
     String value();
 }

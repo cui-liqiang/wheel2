@@ -1,7 +1,7 @@
 package app.controllers;
 
 import app.domains.Person;
-import com.thoughtworks.mvc.annotation.ParamKey;
+import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Path;
 import com.thoughtworks.mvc.core.BaseController;
 import com.thoughtworks.mvc.verb.HttpMethod;
@@ -24,7 +24,7 @@ public class HomeController extends BaseController{
     }
 
     @Path(value = "/", httpMethod = HttpMethod.POST)
-    public void handleSubmit(@ParamKey("people") List<Person> people) throws Exception {
+    public void handleSubmit(@Param("people") List<Person> people) throws Exception {
         Map locals = new HashMap();
         locals.put("people", people);
 

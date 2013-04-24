@@ -1,6 +1,6 @@
 package com.thoughtworks.mvc.core;
 
-import com.thoughtworks.mvc.annotation.ParamKey;
+import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.core.param.Params;
 import com.thoughtworks.mvc.util.DefaultValue;
 import com.thoughtworks.mvc.util.ObjectBindingUtil;
@@ -34,11 +34,16 @@ public class ActionDescriptor {
     }
 
     private void invokeAction(Object bean, Params httpParams) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+        invokeActionWithParams(bean, getActionParams(httpParams));
+    }
+
+    private List<Object> getActionParams(Params httpParams) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchFieldException, ClassNotFoundException {
         Annotation[][] parameterAnnotations = action.getParameterAnnotations();
         Class<?>[] parameterTypes = action.getParameterTypes();
         Type[] genericParameterTypes = action.getGenericParameterTypes();
 
         List<Object> actionParams = new ArrayList<Object>();
+
         for (int i = 0; i < parameterAnnotations.length; i++) {
             Annotation[] parameterAnnotation = parameterAnnotations[i];
             Class<?> parameterType = parameterTypes[i];
@@ -62,7 +67,7 @@ public class ActionDescriptor {
 
             actionParams.add(param);
         }
-        invokeActionWithParams(bean, actionParams);
+        return actionParams;
     }
 
     private void invokeActionWithParams(Object bean, List<Object> actionParams) throws IllegalAccessException, InvocationTargetException {
@@ -90,8 +95,8 @@ public class ActionDescriptor {
 
     private String getParamsKey(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            if (annotation instanceof ParamKey) {
-                return ((ParamKey) annotation).value();
+            if (annotation instanceof Param) {
+                return ((Param) annotation).value();
             }
         }
         return null;
