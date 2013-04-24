@@ -1,5 +1,7 @@
 package com.thoughtworks.mvc.core;
 
+import com.thoughtworks.mvc.core.route.Routes;
+import com.thoughtworks.mvc.core.urlAndVerb.SimpleUrlAndVerb;
 import com.thoughtworks.mvc.verb.HttpMethod;
 import core.IocContainer;
 import core.IocContainerBuilder;
@@ -10,12 +12,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Properties;
 
 public class Dispatcher extends HttpServlet {
     IocContainer container;
-    Map<UrlAndVerb, ActionDescriptor> mapping;
+    Routes routes;
 
     @Override
     public void init() throws ServletException {
@@ -46,7 +47,7 @@ public class Dispatcher extends HttpServlet {
 
     private void scanRouter() throws ServletException {
         try {
-            mapping = new RouterScanner(container).scan("");
+            routes = new RouterScanner(container).scan("");
         } catch (Exception e) {
             throw new ServletException("init router fail", e);
         }
@@ -64,7 +65,8 @@ public class Dispatcher extends HttpServlet {
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp, HttpMethod method) throws IOException, ServletException {
         String url = req.getRequestURI().substring(req.getContextPath().length());
-        ActionDescriptor actionDescriptor = mapping.get(new UrlAndVerb(method, url));
+        ActionDescriptor actionDescriptor = routes.get(new SimpleUrlAndVerb(method, url));
+
         resp.setContentType("text/html");
 
         if (actionDescriptor == null) {

@@ -2,15 +2,15 @@ package com.thoughtworks.mvc.core;
 
 import com.google.common.base.Predicate;
 import com.thoughtworks.mvc.annotation.Path;
+import com.thoughtworks.mvc.core.route.Routes;
+import com.thoughtworks.mvc.core.urlAndVerb.UrlAndVerbFactory;
 import core.IocContainer;
 import util.ClassPathUtil;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static com.google.common.collect.Collections2.filter;
 import static util.AssertUtil.Assert;
@@ -29,7 +29,7 @@ public class RouterScanner {
         this.container = container;
     }
 
-    public Map<UrlAndVerb, ActionDescriptor> scan(String basePackage) throws Exception {
+    public Routes scan(String basePackage) throws Exception {
         List<String> classNames = ClassPathUtil.getClassNamesInPackage(controllersPackage(basePackage));
         Collection<String> controllers = filter(classNames, new Predicate<String>() {
             @Override
@@ -37,31 +37,30 @@ public class RouterScanner {
                 return className.endsWith("Controller");
             }
         });
-        Map<UrlAndVerb, ActionDescriptor> mapping = new HashMap<UrlAndVerb, ActionDescriptor>();
+        Routes routes = new Routes();
+
         for (String controller : controllers) {
-            addMappingsFromControllerTo(controller, mapping);
+            addMappingsFromControllerTo(controller, routes);
         }
-        return mapping;
+        return routes;
     }
 
     private String controllersPackage(String basePackage) {
         return basePackage.equals("") ? "app.controllers" : basePackage + ".app.controllers";
     }
 
-    private void addMappingsFromControllerTo(String controller, Map<UrlAndVerb, ActionDescriptor> mapping) throws Exception {
+    private void addMappingsFromControllerTo(String controller, Routes routes) throws Exception {
         Class controllerClass = Class.forName(controller);
         Assert(controllerClass.isAnnotationPresent(Path.class), "Controller class " + controllerClass + " doesn't have a @Path annotation");
 
         container.register(controllerClass, true);
-        addMappingForEachAction(mapping, controllerClass, ((Path) controllerClass.getAnnotation(Path.class)).value());
+        addMappingForEachAction(routes, controllerClass, ((Path) controllerClass.getAnnotation(Path.class)).value());
     }
 
-    private void addMappingForEachAction(Map<UrlAndVerb, ActionDescriptor> mapping, Class controllerClass, String baseUrl) {
+    private void addMappingForEachAction(Routes routes, Class controllerClass, String baseUrl) {
         for (Method method : filterWithPathAnnotation(controllerClass.getMethods())) {
-            Path actionPathAnnotation = method.getAnnotation(Path.class);
             ActionDescriptor descriptor = new ActionDescriptor(controllerClass, method);
-
-            mapping.put(new UrlAndVerb(actionPathAnnotation.httpMethod(), baseUrl + actionPathAnnotation.value()), descriptor);
+            routes.put(UrlAndVerbFactory.create(baseUrl, method.getAnnotation(Path.class).httpMethod(), method.getAnnotation(Path.class).value()), descriptor);
         }
     }
 
