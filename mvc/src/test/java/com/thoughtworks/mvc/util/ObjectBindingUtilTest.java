@@ -1,24 +1,23 @@
 package com.thoughtworks.mvc.util;
 
 import app.domains.Person;
+import com.thoughtworks.mvc.core.param.Params;
 import org.junit.Test;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
 public class ObjectBindingUtilTest {
     @Test
     public void should_assign_values_to_object_from_map() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
-        Map map = new HashMap();
-        map.put("name", "liqiang");
-        map.put("age", "13");
+        Params params = new Params();
+        params.put("name", "liqiang");
+        params.put("age", "13");
 
-        Person person = ObjectBindingUtil.toObject(Person.class, map);
+        Person person = ObjectBindingUtil.toObject(Person.class, params);
 
         assertEquals("liqiang", person.getName());
         assertEquals(13, person.getAge());
@@ -26,18 +25,18 @@ public class ObjectBindingUtilTest {
 
     @Test
     public void should_assign_complex_values_to_object_from_map() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
-        Map map = new HashMap();
-        map.put("name", "liqiang");
-        map.put("age", "13");
+        Params params = new Params();
+        params.put("name", "liqiang");
+        params.put("age", "13");
 
-        Map phoneMap = new HashMap();
+        Params phoneMap = new Params();
         phoneMap.put("country", "86");
         phoneMap.put("province", "29");
         phoneMap.put("rest", "888888");
 
-        map.put("phone", phoneMap);
+        params.put("phone", phoneMap);
 
-        Person person = ObjectBindingUtil.toObject(Person.class, map);
+        Person person = ObjectBindingUtil.toObject(Person.class, params);
 
         assertEquals("liqiang", person.getName());
         assertEquals(13, person.getAge());
@@ -48,22 +47,22 @@ public class ObjectBindingUtilTest {
 
     @Test
     public void should_convert_map_array_mixture_to_map_and_array() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
-        Map map1 = new HashMap();
-        map1.put("name", "liqiang");
-        map1.put("age", "13");
+        Params params = new Params();
+        params.put("name", "liqiang");
+        params.put("age", "13");
 
-        Map map2 = new HashMap();
-        map2.put("name", "zhichao");
-        map2.put("age", "14");
+        Params params1 = new Params();
+        params1.put("name", "zhichao");
+        params1.put("age", "14");
 
         List people = new ArrayList();
-        people.add(map1);
-        people.add(map2);
+        people.add(params);
+        people.add(params1);
 
-        Map map = new HashMap();
-        map.put("people", people);
+        Params params2 = new Params();
+        params2.put("people", people);
 
-        List<Person> parsedPeople = ObjectBindingUtil.toList(Person.class, (List) map.get("people"));
+        List<Person> parsedPeople = ObjectBindingUtil.toList(Person.class, (List) params2.get("people"));
 
         assertEquals("liqiang", parsedPeople.get(0).getName());
         assertEquals(13, parsedPeople.get(0).getAge());
@@ -74,16 +73,16 @@ public class ObjectBindingUtilTest {
 
     @Test
     public void should_convert_map_array_mixture_to_object_with_array() throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
-        Map map = new HashMap();
+        Params map = new Params();
         map.put("name", "liqiang");
         map.put("age", "13");
 
-        List<Map> phones = new ArrayList<Map>();
-        Map phone1 = new HashMap();
+        List<Params> phones = new ArrayList<Params>();
+        Params phone1 = new Params();
         phone1.put("country", "86");
         phone1.put("province", "29");
 
-        Map phone2 = new HashMap();
+        Params phone2 = new Params();
         phone2.put("country", "64");
         phone2.put("province", "44");
 

@@ -1,22 +1,32 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'jetty'
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
 
-repositories {
+    repositories {
         mavenCentral()
     }
 
+    dependencies {
+        compile 'com.google.guava:guava:14.0.1'
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.mockito:mockito-all:1.9.5'
+    }
 
-dependencies{
-	compile('javax.servlet:servlet-api:3.0-alpha-1',
-            'junit:junit:4.11',
-            'org.slf4j:slf4j-log4j12:1.7.5',
-            'org.apache.velocity:velocity:1.6.2',
-            'com.google.guava:guava:14.0.1',
-            'org.mockito:mockito-all:1.8.4',
-            files('lib/IOC-gradle.jar'))
 }
 
-jettyRun{
-    classpath:"build/classes/main/"
+project(":mvc") {
+    dependencies {
+        compile('javax.servlet:servlet-api:3.0-alpha-1',
+                'org.slf4j:slf4j-log4j12:1.7.5',
+                'org.apache.velocity:velocity:1.6.2',
+                files('lib/IOC-gradle.jar'))
+    }
+}
+
+project(":example") {
+    apply plugin: 'jetty'
+
+    dependencies {
+        compile project(':mvc')
+    }
 }
