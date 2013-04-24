@@ -1,1 +1,3 @@
-users controller show action $id
+user info: <br />
+$person.name
+$person.age

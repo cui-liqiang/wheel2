@@ -8,9 +8,7 @@ import core.IocContainer;
 import util.ClassPathUtil;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static com.google.common.collect.Collections2.filter;
 import static util.AssertUtil.Assert;

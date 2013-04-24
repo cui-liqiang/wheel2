@@ -13,8 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ActionDescriptor {
     private final Class controllerClass;
@@ -29,12 +28,18 @@ public class ActionDescriptor {
         BaseController controller = (BaseController) container.getBean(controllerClass);
 
         controller.init(req, resp, params);
-        invokeAction(controller, params);
-        controller.render(action.getName());
+        Object o = invokeAction(controller, params);
+        if(o == null) {
+            controller.render(action.getName());
+        } else {
+            Map map = new HashMap();
+            map.put(action.getReturnType().getSimpleName().toLowerCase(), o);
+            controller.render(action.getName(), map);
+        }
     }
 
-    private void invokeAction(Object bean, Params httpParams) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
-        invokeActionWithParams(bean, getActionParams(httpParams));
+    private Object invokeAction(Object bean, Params httpParams) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+        return invokeActionWithParams(bean, getActionParams(httpParams));
     }
 
     private List<Object> getActionParams(Params httpParams) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchFieldException, ClassNotFoundException {
@@ -70,27 +75,22 @@ public class ActionDescriptor {
         return actionParams;
     }
 
-    private void invokeActionWithParams(Object bean, List<Object> actionParams) throws IllegalAccessException, InvocationTargetException {
+    private Object invokeActionWithParams(Object bean, List<Object> actionParams) throws IllegalAccessException, InvocationTargetException {
         switch (actionParams.size()) {
             case 0:
-                action.invoke(bean);
-                return;
+                return action.invoke(bean);
             case 1:
-                action.invoke(bean, actionParams.get(0));
-                return;
+                return action.invoke(bean, actionParams.get(0));
             case 2:
-                action.invoke(bean, actionParams.get(0), actionParams.get(1));
-                return;
+                return action.invoke(bean, actionParams.get(0), actionParams.get(1));
             case 3:
-                action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2));
-                return;
+                return action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2));
             case 4:
-                action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3));
-                return;
+                return action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3));
             case 5:
-                action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3), actionParams.get(4));
-                return;
+                return action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3), actionParams.get(4));
         }
+        return null;
     }
 
     private String getParamsKey(Annotation[] annotations) {
