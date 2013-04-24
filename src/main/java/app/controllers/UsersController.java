@@ -7,10 +7,10 @@ import com.thoughtworks.mvc.core.BaseController;
 @Path("/users")
 public class UsersController extends BaseController {
 
-    public String id;
+    public int id;
 
     @Path("/:id")
-    public void show(@Param("id") String id) {
+    public void show(@Param("id") int id) {
         this.id = id;
     }
 
