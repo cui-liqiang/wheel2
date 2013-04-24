@@ -15,7 +15,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ActionDescriptor {
     private final Class controllerClass;
@@ -49,8 +48,8 @@ public class ActionDescriptor {
 
             if (key != null) {
                 Object value = httpParams.get(key);
-                if (value instanceof Map) {
-                    param = ObjectBindingUtil.toObject(parameterType, (Map) value);
+                if (value instanceof Params) {
+                    param = ObjectBindingUtil.toObject(parameterType, (Params) value);
                 } else if (value instanceof List) {
                     Type genericParameterType = genericParameterTypes[i];
                     ParameterizedType pt = (ParameterizedType) genericParameterType;

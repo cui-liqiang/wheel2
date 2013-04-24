@@ -1,5 +1,6 @@
 package com.thoughtworks.mvc.util;
 
+import com.thoughtworks.mvc.core.param.Params;
 import sun.beans.editors.ByteEditor;
 import sun.beans.editors.DoubleEditor;
 import sun.beans.editors.IntEditor;
@@ -41,27 +42,27 @@ public class ObjectBindingUtil {
         editorMap.put(clazz, editor);
     }
 
-    static public <T> T toObject(Class<T> clazz, Map map) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchFieldException, ClassNotFoundException {
+    static public <T> T toObject(Class<T> clazz, Params params) throws IllegalAccessException, InstantiationException, InvocationTargetException, NoSuchFieldException, ClassNotFoundException {
         T t = clazz.newInstance();
 
-        if(map == null) return t;
+        if (params == null) return t;
 
         List<Method> setters = getSetters(clazz.getMethods());
         for (Method setter : setters) {
             String name = setter.getName().substring(3).toLowerCase();
-            Object value = map.get(name);
-            if(value == null) continue;
+            Object value = params.get(name);
+            if (value == null) continue;
 
             Object obj = null;
             Class<?> type = setter.getParameterTypes()[0];
-            if(value instanceof String) {
+            if (value instanceof String) {
                 obj = toSimpleObject(type, (String) value);
-            } else if(value instanceof Map){
-                obj = toObject(type, (Map)value);
-            } else if(value instanceof List) {
-                ParameterizedType pt = (ParameterizedType)clazz.getDeclaredField(name).getGenericType();
+            } else if (value instanceof Params) {
+                obj = toObject(type, (Params) value);
+            } else if (value instanceof List) {
+                ParameterizedType pt = (ParameterizedType) clazz.getDeclaredField(name).getGenericType();
                 // pt.getActualTypeArguments()[0].toString() will be "class #{some qualified name}", so 6 is to skip the leading "class "
-                obj = toList(Class.forName(pt.getActualTypeArguments()[0].toString().substring(6)), (List)value);
+                obj = toList(Class.forName(pt.getActualTypeArguments()[0].toString().substring(6)), (List) value);
             }
 
             setter.invoke(t, obj);
@@ -70,11 +71,11 @@ public class ObjectBindingUtil {
         return t;
     }
 
-    static public <T> List<T> toList(Class<T> clazz, List maps) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
+    static public <T> List<T> toList(Class<T> clazz, List paramsList) throws InstantiationException, IllegalAccessException, InvocationTargetException, ClassNotFoundException, NoSuchFieldException {
         List<T> list = new ArrayList<T>();
 
-        for (Object map : maps) {
-            list.add(toObject(clazz, (Map)map));
+        for (Object param : paramsList) {
+            list.add(toObject(clazz, (Params) param));
         }
 
         return list;
@@ -82,10 +83,10 @@ public class ObjectBindingUtil {
 
     static public Object toSimpleObject(Class<?> type, String value) throws IllegalAccessException, InstantiationException {
         Class<? extends PropertyEditor> aClass = editorMap.get(type);
-        if(aClass == null) return null;
+        if (aClass == null) return null;
 
         PropertyEditor propertyEditor = aClass.newInstance();
-        try{
+        try {
             propertyEditor.setAsText(value);
             return propertyEditor.getValue();
         } catch (RuntimeException e) {
@@ -98,7 +99,7 @@ public class ObjectBindingUtil {
     static private List<Method> getSetters(Method[] allMethods) {
         List<Method> filtered = new ArrayList<Method>();
         for (Method method : allMethods) {
-            if(method.getName().matches("set[A-Z].*")) {
+            if (method.getName().matches("set[A-Z].*")) {
                 filtered.add(method);
             }
         }
