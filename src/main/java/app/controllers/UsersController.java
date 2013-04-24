@@ -6,9 +6,10 @@ import com.thoughtworks.mvc.core.BaseController;
 @Path("/users")
 public class UsersController extends BaseController {
 
-    @Path("/:id")
-    // TODO: support parameters in request url.
-    public void show(int id) {
+    public String id;
 
+    @Path("/:id")
+    public void show(int id) {
+        this.id = (String) params.get("id");
     }
 }

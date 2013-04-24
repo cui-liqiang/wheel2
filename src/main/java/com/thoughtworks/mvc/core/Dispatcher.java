@@ -1,5 +1,6 @@
 package com.thoughtworks.mvc.core;
 
+import com.thoughtworks.mvc.core.route.Route;
 import com.thoughtworks.mvc.core.route.Routes;
 import com.thoughtworks.mvc.core.urlAndVerb.SimpleUrlAndVerb;
 import com.thoughtworks.mvc.verb.HttpMethod;
@@ -65,20 +66,16 @@ public class Dispatcher extends HttpServlet {
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp, HttpMethod method) throws IOException, ServletException {
         String url = req.getRequestURI().substring(req.getContextPath().length());
-        ActionDescriptor actionDescriptor = routes.get(new SimpleUrlAndVerb(method, url));
+        Route route = routes.get(new SimpleUrlAndVerb(method, url));
 
         resp.setContentType("text/html");
 
-        if (actionDescriptor == null) {
+        if (route == null || route.getActionDescriptor() == null) {
             resp.sendError(404);
             return;
         }
 
-        try {
-            actionDescriptor.exec(req, resp, container);
-        } catch (Exception e) {
-            throw new ServletException("error in handling url \"" + url + "\"", e);
-        }
+        route.exec(req, resp, container);
     }
 
 }

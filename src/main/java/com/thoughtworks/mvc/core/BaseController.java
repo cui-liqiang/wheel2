@@ -1,5 +1,6 @@
 package com.thoughtworks.mvc.core;
 
+import com.thoughtworks.mvc.core.param.Params;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.context.Context;
@@ -14,20 +15,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BaseController {
+
     private boolean rendered = false;
     private HttpServletRequest request;
     protected HttpServletResponse response;
-    protected Map params;
+    protected Params params;
 
-    void setRequest(HttpServletRequest request) {
+    void init(HttpServletRequest request, HttpServletResponse response, Params params) {
         this.request = request;
-    }
-
-    void setResponse(HttpServletResponse response) {
         this.response = response;
-    }
-
-    public void setParams(Map params) {
         this.params = params;
     }
 

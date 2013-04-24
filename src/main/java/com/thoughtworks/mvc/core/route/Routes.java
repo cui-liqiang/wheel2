@@ -15,10 +15,10 @@ public class Routes {
         routes.add(new Route(urlAndVerb, descriptor));
     }
 
-    public ActionDescriptor get(SimpleUrlAndVerb simpleUrlAndVerb) {
+    public Route get(SimpleUrlAndVerb simpleUrlAndVerb) {
         for (Route route : routes) {
             if (route.match(simpleUrlAndVerb)) {
-                return route.getActionDescriptor();
+                return route;
             }
         }
         return null;

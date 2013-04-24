@@ -1,8 +1,10 @@
 package com.thoughtworks.mvc.core.urlAndVerb;
 
+import com.thoughtworks.mvc.core.param.Param;
 import com.thoughtworks.mvc.verb.HttpMethod;
 
 public class SimpleUrlAndVerb extends UrlAndVerb {
+
     protected final HttpMethod httpMethod;
     protected final String url;
 
@@ -16,5 +18,10 @@ public class SimpleUrlAndVerb extends UrlAndVerb {
         if (httpMethod != simpleUrlAndVerb.httpMethod) return false;
         if (url != null ? !url.equals(simpleUrlAndVerb.url) : simpleUrlAndVerb.url != null) return false;
         return true;
+    }
+
+    @Override
+    public Param extract(String requestUrl) {
+        return null;
     }
 }

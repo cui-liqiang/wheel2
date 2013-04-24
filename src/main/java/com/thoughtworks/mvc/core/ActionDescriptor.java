@@ -1,6 +1,7 @@
 package com.thoughtworks.mvc.core;
 
 import com.thoughtworks.mvc.annotation.ParamKey;
+import com.thoughtworks.mvc.core.param.Params;
 import com.thoughtworks.mvc.util.DefaultValue;
 import com.thoughtworks.mvc.util.ObjectBindingUtil;
 import core.IocContainer;
@@ -25,43 +26,38 @@ public class ActionDescriptor {
         this.action = action;
     }
 
-    public void exec(HttpServletRequest req, HttpServletResponse resp, IocContainer container) throws Exception {
-        Object bean = container.getBean(controllerClass);
-        BaseController controller = (BaseController) bean;
+    public void exec(HttpServletRequest req, HttpServletResponse resp, IocContainer container, Params params) throws Exception {
+        BaseController controller = (BaseController) container.getBean(controllerClass);
 
-        controller.setRequest(req);
-        controller.setResponse(resp);
-        Map params = ParamsCreator.create(req);
-        controller.setParams(params);
-
-        invokeAction(bean, params);
+        controller.init(req, resp, params);
+        invokeAction(controller, params);
         controller.render(action.getName());
     }
 
-    private void invokeAction(Object bean, Map httpParams) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
+    private void invokeAction(Object bean, Params httpParams) throws IllegalAccessException, InvocationTargetException, InstantiationException, ClassNotFoundException, NoSuchFieldException {
         Annotation[][] parameterAnnotations = action.getParameterAnnotations();
         Class<?>[] parameterTypes = action.getParameterTypes();
         Type[] genericParameterTypes = action.getGenericParameterTypes();
 
         List<Object> actionParams = new ArrayList<Object>();
-        for(int i = 0;i < parameterAnnotations.length;i++) {
+        for (int i = 0; i < parameterAnnotations.length; i++) {
             Annotation[] parameterAnnotation = parameterAnnotations[i];
             Class<?> parameterType = parameterTypes[i];
 
             Object param = DefaultValue.defaultValueOf(parameterType);
             String key = getParamsKey(parameterAnnotation);
 
-            if(key != null) {
+            if (key != null) {
                 Object value = httpParams.get(key);
-                if(value instanceof Map) {
+                if (value instanceof Map) {
                     param = ObjectBindingUtil.toObject(parameterType, (Map) value);
                 } else if (value instanceof List) {
                     Type genericParameterType = genericParameterTypes[i];
-                    ParameterizedType pt = (ParameterizedType)genericParameterType;
+                    ParameterizedType pt = (ParameterizedType) genericParameterType;
                     // pt.getActualTypeArguments()[0].toString() will be "class #{some qualified name}", so 6 is to skip the leading "class "
-                    param = ObjectBindingUtil.toList(Class.forName(pt.getActualTypeArguments()[0].toString().substring(6)), (List)value);
+                    param = ObjectBindingUtil.toList(Class.forName(pt.getActualTypeArguments()[0].toString().substring(6)), (List) value);
                 } else if (value instanceof String) {
-                    param = ObjectBindingUtil.toSimpleObject(parameterType, (String)value);
+                    param = ObjectBindingUtil.toSimpleObject(parameterType, (String) value);
                 }
             }
 
@@ -71,20 +67,32 @@ public class ActionDescriptor {
     }
 
     private void invokeActionWithParams(Object bean, List<Object> actionParams) throws IllegalAccessException, InvocationTargetException {
-        switch (actionParams.size()){
-            case 0 : action.invoke(bean); return;
-            case 1 : action.invoke(bean, actionParams.get(0)); return;
-            case 2 : action.invoke(bean, actionParams.get(0), actionParams.get(1)); return;
-            case 3 : action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2)); return;
-            case 4 : action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3)); return;
-            case 5 : action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3), actionParams.get(4)); return;
+        switch (actionParams.size()) {
+            case 0:
+                action.invoke(bean);
+                return;
+            case 1:
+                action.invoke(bean, actionParams.get(0));
+                return;
+            case 2:
+                action.invoke(bean, actionParams.get(0), actionParams.get(1));
+                return;
+            case 3:
+                action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2));
+                return;
+            case 4:
+                action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3));
+                return;
+            case 5:
+                action.invoke(bean, actionParams.get(0), actionParams.get(1), actionParams.get(2), actionParams.get(3), actionParams.get(4));
+                return;
         }
     }
 
     private String getParamsKey(Annotation[] annotations) {
         for (Annotation annotation : annotations) {
-            if(annotation instanceof ParamKey) {
-                return ((ParamKey)annotation).value();
+            if (annotation instanceof ParamKey) {
+                return ((ParamKey) annotation).value();
             }
         }
         return null;

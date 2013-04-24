@@ -1,5 +1,6 @@
 package com.thoughtworks.mvc.core;
 
+import com.thoughtworks.mvc.core.route.Route;
 import com.thoughtworks.mvc.core.route.Routes;
 import com.thoughtworks.mvc.core.urlAndVerb.SimpleUrlAndVerb;
 import com.thoughtworks.mvc.verb.HttpMethod;
@@ -37,13 +38,15 @@ public class RouterScannerTest {
     public void should_join_url_in_class_and_url_in_action() throws Exception {
         Method action = TestController.class.getMethod("action1");
         ActionDescriptor expectedDescriptor = new ActionDescriptor(TestController.class, action);
-        assertEquals(expectedDescriptor, routes.get(new SimpleUrlAndVerb(HttpMethod.GET, "/test/action1")));
+        Route route = routes.get(new SimpleUrlAndVerb(HttpMethod.GET, "/test/action1"));
+        assertEquals(expectedDescriptor, route.getActionDescriptor());
     }
 
     @Test
     public void should_mapping_action_with_according_to_http_method() throws NoSuchMethodException {
         Method action = TestController.class.getMethod("action3");
         ActionDescriptor expectedDescriptor = new ActionDescriptor(TestController.class, action);
-        assertEquals(expectedDescriptor, routes.get(new SimpleUrlAndVerb(HttpMethod.POST, "/test/action1")));
+        Route route = routes.get(new SimpleUrlAndVerb(HttpMethod.POST, "/test/action1"));
+        assertEquals(expectedDescriptor, route.getActionDescriptor());
     }
 }

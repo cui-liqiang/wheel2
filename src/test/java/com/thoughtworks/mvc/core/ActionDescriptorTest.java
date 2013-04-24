@@ -1,5 +1,6 @@
 package com.thoughtworks.mvc.core;
 
+import com.thoughtworks.mvc.core.param.FormParamsCreator;
 import core.IocContainer;
 import core.IocContainerBuilder;
 import org.apache.velocity.Template;
@@ -44,7 +45,7 @@ public class ActionDescriptorTest {
         Template template = TemplateUtil.getTemplateFromString("Hello $name");
         when(repo.getTemplate("test", "action1")).thenReturn(template);
 
-        actionDescriptor.exec(req, resp, controllersContainer);
+        actionDescriptor.exec(req, resp, controllersContainer, FormParamsCreator.create(req));
 
         assertEquals("Hello liqiang", resp.getResponse());
     }
