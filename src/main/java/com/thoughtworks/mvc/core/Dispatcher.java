@@ -15,16 +15,24 @@ import java.util.Properties;
 
 public class Dispatcher extends HttpServlet {
     IocContainer container;
-    Map<UrlAndVerb,ActionDescriptor> mapping;
+    Map<UrlAndVerb, ActionDescriptor> mapping;
 
     @Override
     public void init() throws ServletException {
+        initContainer();
+        initVelocity();
+        scanRouter();
+    }
+
+    private void initContainer() throws ServletException {
         try {
             container = new IocContainerBuilder().withPackageName("app.controllers").build();
         } catch (Exception e) {
             throw new ServletException("init ioc container fail", e);
         }
+    }
 
+    private void initVelocity() throws ServletException {
         String absoluteRootPath = this.getServletContext().getRealPath("/");
 
         Properties properties = new Properties();
@@ -34,9 +42,11 @@ public class Dispatcher extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException("init template engine config fail", e);
         }
+    }
 
+    private void scanRouter() throws ServletException {
         try {
-            mapping = new RouterScanner().scan("");
+            mapping = new RouterScanner(container).scan("");
         } catch (Exception e) {
             throw new ServletException("init router fail", e);
         }
@@ -54,10 +64,10 @@ public class Dispatcher extends HttpServlet {
 
     private void dispatch(HttpServletRequest req, HttpServletResponse resp, HttpMethod method) throws IOException, ServletException {
         String url = req.getRequestURI().substring(req.getContextPath().length());
-        ActionDescriptor actionDescriptor = mapping.get(new UrlAndVerb(method,url));
+        ActionDescriptor actionDescriptor = mapping.get(new UrlAndVerb(method, url));
         resp.setContentType("text/html");
 
-        if(actionDescriptor == null) {
+        if (actionDescriptor == null) {
             resp.sendError(404);
             return;
         }

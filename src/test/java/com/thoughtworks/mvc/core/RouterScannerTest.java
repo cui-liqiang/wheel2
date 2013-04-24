@@ -1,6 +1,8 @@
 package com.thoughtworks.mvc.core;
 
 import com.thoughtworks.mvc.verb.HttpMethod;
+import core.IocContainer;
+import core.IocContainerBuilder;
 import org.apache.velocity.Template;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,12 +22,13 @@ public class RouterScannerTest {
     RouterScanner scanner;
     TemplateRepository repo;
     Template template;
-    Map<UrlAndVerb,ActionDescriptor> mapping;
+    Map<UrlAndVerb, ActionDescriptor> mapping;
 
     @Before
     public void setup() throws Exception {
+        IocContainer iocContainer = new IocContainerBuilder().build();
         repo = mock(TemplateRepository.class);
-        scanner = new RouterScanner(repo);
+        scanner = new RouterScanner(repo, iocContainer);
         template = TemplateUtil.getTemplateFromString("whatever");
         when(repo.getTemplate("test", "action1")).thenReturn(template);
         mapping = scanner.scan("testpackage");

@@ -13,8 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 @Path("/home")
-@Component
-@Prototype
 public class HomeController extends BaseController{
     private String name;
     private Person person;

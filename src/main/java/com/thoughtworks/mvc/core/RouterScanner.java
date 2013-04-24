@@ -2,6 +2,7 @@ package com.thoughtworks.mvc.core;
 
 import com.google.common.base.Predicate;
 import com.thoughtworks.mvc.annotation.Path;
+import core.IocContainer;
 import util.ClassPathUtil;
 
 import java.lang.reflect.Method;
@@ -13,15 +14,18 @@ import static util.AssertUtil.Assert;
 
 public class RouterScanner {
     TemplateRepository templateRepo = new TemplateRepository();
+    private IocContainer container;
 
-    public RouterScanner(TemplateRepository templateRepo) {
+    public RouterScanner(TemplateRepository templateRepo, IocContainer container) {
         this.templateRepo = templateRepo;
+        this.container = container;
     }
 
-    public RouterScanner() {
+    public RouterScanner(IocContainer container) {
+        this.container = container;
     }
 
-    public Map<UrlAndVerb,ActionDescriptor> scan(String basePackage) throws Exception {
+    public Map<UrlAndVerb, ActionDescriptor> scan(String basePackage) throws Exception {
         List<String> classNames = ClassPathUtil.getClassNamesInPackage(controllersPackage(basePackage));
         Collection<String> controllers = filter(classNames, new Predicate<String>() {
             @Override
@@ -29,7 +33,7 @@ public class RouterScanner {
                 return className.endsWith("Controller");
             }
         });
-        Map<UrlAndVerb,ActionDescriptor> mapping = new HashMap<UrlAndVerb, ActionDescriptor>();
+        Map<UrlAndVerb, ActionDescriptor> mapping = new HashMap<UrlAndVerb, ActionDescriptor>();
         for (String controller : controllers) {
             addMappingsFromControllerTo(controller, mapping);
         }
@@ -44,7 +48,8 @@ public class RouterScanner {
         Class controllerClass = Class.forName(controller);
         Assert(controllerClass.isAnnotationPresent(Path.class), "Controller class " + controllerClass + " doesn't have a @Path annotation");
 
-        addMappingForEachAction(mapping, controllerClass, ((Path)controllerClass.getAnnotation(Path.class)).value());
+        container.register(controllerClass, true);
+        addMappingForEachAction(mapping, controllerClass, ((Path) controllerClass.getAnnotation(Path.class)).value());
     }
 
     private void addMappingForEachAction(Map<UrlAndVerb, ActionDescriptor> mapping, Class controllerClass, String baseUrl) {
@@ -59,7 +64,7 @@ public class RouterScanner {
     private List<Method> filterWithPathAnnotation(Method[] allMethods) {
         List<Method> forReturn = new ArrayList<Method>();
         for (Method method : allMethods) {
-            if(method.isAnnotationPresent(Path.class)) {
+            if (method.isAnnotationPresent(Path.class)) {
                 forReturn.add(method);
             }
         }
