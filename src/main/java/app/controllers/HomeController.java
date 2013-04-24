@@ -5,8 +5,6 @@ import com.thoughtworks.mvc.annotation.ParamKey;
 import com.thoughtworks.mvc.annotation.Path;
 import com.thoughtworks.mvc.core.BaseController;
 import com.thoughtworks.mvc.verb.HttpMethod;
-import core.annotation.Component;
-import core.scopes.Prototype;
 
 import java.util.HashMap;
 import java.util.List;

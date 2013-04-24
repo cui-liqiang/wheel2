@@ -1,6 +1,11 @@
 package com.thoughtworks.mvc.util;
 
-import sun.beans.editors.*;
+import sun.beans.editors.ByteEditor;
+import sun.beans.editors.DoubleEditor;
+import sun.beans.editors.IntEditor;
+import sun.beans.editors.LongEditor;
+import sun.beans.editors.ShortEditor;
+import sun.beans.editors.StringEditor;
 
 import java.beans.PropertyEditor;
 import java.lang.reflect.InvocationTargetException;

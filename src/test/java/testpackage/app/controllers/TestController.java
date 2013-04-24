@@ -5,9 +5,6 @@ import com.thoughtworks.mvc.core.BaseController;
 import com.thoughtworks.mvc.verb.HttpMethod;
 import core.annotation.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 @Component
 @Path("/test")
 public class TestController extends BaseController {
