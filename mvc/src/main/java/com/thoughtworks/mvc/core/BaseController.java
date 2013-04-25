@@ -1,6 +1,7 @@
 package com.thoughtworks.mvc.core;
 
 import com.thoughtworks.mvc.core.param.Params;
+import com.thoughtworks.mvc.mime.MimeType;
 import com.thoughtworks.mvc.util.StringUtil;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -19,11 +20,13 @@ public class BaseController {
     private HttpServletRequest request;
     protected HttpServletResponse response;
     protected Params params;
+    private MimeType mimeType;
 
-    void init(HttpServletRequest request, HttpServletResponse response, Params params) {
+    void init(HttpServletRequest request, HttpServletResponse response, Params params, MimeType mimeType) {
         this.request = request;
         this.response = response;
         this.params = params;
+        this.mimeType = mimeType;
     }
 
     protected void render(String action) throws Exception {
@@ -48,7 +51,7 @@ public class BaseController {
                 context.put((String) key, locals.get(key));
             }
 
-            getTemplate(action).merge(context, response.getWriter());
+            getTemplate(action, mimeType.toString().toLowerCase()).merge(context, response.getWriter());
             response.getWriter().flush();
         } finally {
             rendered = true;
@@ -76,9 +79,9 @@ public class BaseController {
         rendered = true;
     }
 
-    private Template getTemplate(String action) throws Exception {
+    private Template getTemplate(String action, String suffix) throws Exception {
         String controller = StringUtil.extractControllerName(this.getClass().getName());
-        return TemplateRepository.getInstance().getTemplate(controller, action);
+        return TemplateRepository.getInstance().getTemplate(controller, action, suffix);
     }
 
 }

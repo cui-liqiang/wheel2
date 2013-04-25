@@ -3,6 +3,7 @@ package com.thoughtworks.mvc.core;
 import com.thoughtworks.mvc.core.route.Route;
 import com.thoughtworks.mvc.core.route.Routes;
 import com.thoughtworks.mvc.core.urlAndVerb.SimpleUrlAndVerb;
+import com.thoughtworks.mvc.mime.MimeType;
 import com.thoughtworks.mvc.verb.HttpMethod;
 import core.IocContainer;
 import core.IocContainerBuilder;
@@ -14,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Set;
 
 public class Dispatcher extends HttpServlet {
     IocContainer container;
@@ -78,14 +80,18 @@ public class Dispatcher extends HttpServlet {
         String url = req.getRequestURI().substring(req.getContextPath().length());
         Route route = routes.get(new SimpleUrlAndVerb(method, url));
 
-        resp.setContentType("text/html");
-
         if (route == null || route.getActionDescriptor() == null) {
             resp.sendError(404);
             return;
         }
 
-        route.exec(req, resp, container);
-    }
+        MimeType mimeType = route.getFirstSupportMimeType(MimeType.getMimeTypes(req));
+        if(mimeType == null) {
+            resp.sendError(406);
+            return;
+        }
 
+        resp.setContentType(mimeType.value());
+        route.exec(req, resp, mimeType,  container);
+    }
 }

@@ -22,7 +22,7 @@ public class TemplateRepository {
     }
 
 
-    public Template getTemplate(String controller, String method) throws Exception {
-        return Velocity.getTemplate(controller + "/" + method + ".vm");
+    public Template getTemplate(String controller, String method, String suffix) throws Exception {
+        return Velocity.getTemplate(controller + "/" + method + "." + suffix + ".vm");
     }
 }

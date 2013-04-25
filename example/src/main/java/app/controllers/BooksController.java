@@ -4,7 +4,9 @@ import app.domains.Book;
 import app.services.BookService;
 import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Resource;
+import com.thoughtworks.mvc.annotation.Respond;
 import com.thoughtworks.mvc.core.BaseController;
+import com.thoughtworks.mvc.mime.MimeType;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -31,6 +33,7 @@ public class BooksController extends BaseController {
         redirect(pathTo(book));
     }
 
+    @Respond({MimeType.HTML, MimeType.JSON})
     public Book show(@Param("id") int id) {
         return service.findBy(id);
     }

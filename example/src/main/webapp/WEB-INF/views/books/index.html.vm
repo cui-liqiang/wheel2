@@ -9,6 +9,6 @@
         <li><a href="books/$book.id">$book.title</a></li>
     #end
 </ul>
-<a href="books/new">add</a>
+<a href="/example/books/new">add</a>
 </body>
 </html>

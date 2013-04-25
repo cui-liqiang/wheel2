@@ -30,7 +30,7 @@ public class RouterScannerTest {
         repo = mock(TemplateRepository.class);
         scanner = new RouterScanner(repo, iocContainer);
         template = TemplateUtil.getTemplateFromString("whatever");
-        when(repo.getTemplate("test", "action1")).thenReturn(template);
+        when(repo.getTemplate("test", "action1", "html")).thenReturn(template);
         routes = scanner.scan("testpackage");
     }
 

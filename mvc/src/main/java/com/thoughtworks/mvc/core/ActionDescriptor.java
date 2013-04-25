@@ -1,7 +1,9 @@
 package com.thoughtworks.mvc.core;
 
 import com.thoughtworks.mvc.annotation.Param;
+import com.thoughtworks.mvc.annotation.Respond;
 import com.thoughtworks.mvc.core.param.Params;
+import com.thoughtworks.mvc.mime.MimeType;
 import com.thoughtworks.mvc.util.DefaultValue;
 import com.thoughtworks.mvc.util.ObjectBindingUtil;
 import core.IocContainer;
@@ -22,16 +24,28 @@ import java.util.Map;
 public class ActionDescriptor {
     private final Class controllerClass;
     private final Method action;
+    private List<MimeType> supportedMimes = new ArrayList<MimeType>();
 
     public ActionDescriptor(Class controllerClass, Method action) {
         this.controllerClass = controllerClass;
         this.action = action;
+
+        Respond responds = action.getAnnotation(Respond.class);
+        if(responds != null) {
+            MimeType[] value = responds.value();
+
+            for (MimeType mimeType : value) {
+                supportedMimes.add(mimeType);
+            }
+        } else {
+            supportedMimes.add(MimeType.HTML);
+        }
     }
 
-    public void exec(HttpServletRequest req, HttpServletResponse resp, IocContainer container, Params params) throws Exception {
+    public void exec(HttpServletRequest req, HttpServletResponse resp, MimeType mimeType, IocContainer container, Params params) throws Exception {
         BaseController controller = (BaseController) container.getBean(controllerClass);
 
-        controller.init(req, resp, params);
+        controller.init(req, resp, params, mimeType);
         Object o = invokeAction(controller, params);
         if (o == null) {
             controller.render(action.getName());
@@ -134,5 +148,13 @@ public class ActionDescriptor {
         int result = controllerClass != null ? controllerClass.hashCode() : 0;
         result = 31 * result + (action != null ? action.hashCode() : 0);
         return result;
+    }
+
+    public boolean support(MimeType mimeType) {
+        for (MimeType supportedMime : supportedMimes) {
+            if(mimeType.equals(supportedMime))
+                return true;
+        }
+        return false;
     }
 }
