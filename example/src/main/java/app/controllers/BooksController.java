@@ -9,6 +9,7 @@ import com.thoughtworks.mvc.core.BaseController;
 import com.thoughtworks.mvc.mime.MimeType;
 
 import javax.inject.Inject;
+import java.io.IOException;
 import java.util.List;
 
 @Resource
@@ -34,8 +35,12 @@ public class BooksController extends BaseController {
     }
 
     @Respond({MimeType.HTML, MimeType.JSON})
-    public Book show(@Param("id") int id) {
-        return service.findBy(id);
+    public Book show(@Param("id") int id) throws IOException {
+        Book book = service.findBy(id);
+        if(book == null) {
+            render(404);
+        }
+        return book;
     }
 
     public Book edit(@Param("id") int id) {

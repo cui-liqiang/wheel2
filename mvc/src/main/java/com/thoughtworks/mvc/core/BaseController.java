@@ -37,20 +37,15 @@ public class BaseController {
         doRender(action, locals);
     }
 
+    protected void render(int code) throws IOException {
+        response.sendError(code);
+    }
+
     private void doRender(String action, Map locals) throws Exception {
         if (rendered) return;
 
         try {
             Context context = new VelocityContext();
-            for (Field field : this.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                context.put(field.getName(), field.get(this));
-            }
-
-            for (Object key : locals.keySet()) {
-                context.put((String) key, locals.get(key));
-            }
-
             getTemplate(action, mimeType.toString().toLowerCase()).merge(context, response.getWriter());
             response.getWriter().flush();
         } finally {

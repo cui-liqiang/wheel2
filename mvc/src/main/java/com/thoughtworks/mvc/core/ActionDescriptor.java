@@ -47,7 +47,7 @@ public class ActionDescriptor {
 
         controller.init(req, resp, params, mimeType);
         Object o = invokeAction(controller, params);
-        if (o == null) {
+        if ("void".equals(action.getReturnType().toString())) {
             controller.render(action.getName());
         } else {
             Map map = new HashMap();
