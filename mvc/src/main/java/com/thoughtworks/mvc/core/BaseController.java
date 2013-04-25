@@ -66,6 +66,16 @@ public class BaseController {
         rendered = true;
     }
 
+    protected void string(String text) {
+        response.setContentType("text/plain");
+        try {
+            response.getWriter().write(text);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        rendered = true;
+    }
+
     private Template getTemplate(String action) throws Exception {
         String controller = StringUtil.extractControllerName(this.getClass().getName());
         return TemplateRepository.getInstance().getTemplate(controller, action);

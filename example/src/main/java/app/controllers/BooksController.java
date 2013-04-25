@@ -46,11 +46,7 @@ public class BooksController extends BaseController {
 
     public void destroy(@Param("id") int id) {
         service.deleteBy(id);
-        redirect(pathToIndex());
-    }
-
-    private String pathToIndex() {
-        return "/books";
+        string("book is deleted!");
     }
 
     private String pathTo(Book book) {
