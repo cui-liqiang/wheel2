@@ -1,0 +1,13 @@
+<html>
+<head>
+    <title>007 James Bond Books</title>
+</head>
+<body>
+<h2>007 James Bond Books</h2>
+
+<h1>edit</h1>
+<input name="book.title" value="$book.title">
+<a href="../../books">back to list</a>
+<a href="../$book.id">back</a>
+</body>
+</html>

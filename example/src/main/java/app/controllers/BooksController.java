@@ -1,33 +1,48 @@
 package app.controllers;
 
 import app.domains.Book;
+import app.services.BookService;
 import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Resource;
 import com.thoughtworks.mvc.core.BaseController;
 
+import javax.inject.Inject;
+import java.util.List;
+
 @Resource
 public class BooksController extends BaseController {
 
-    public void index() {
+    @Inject
+    private BookService service;
+
+    public void setService(BookService service) {
+        this.service = service;
+    }
+
+    public List<Book> index() {
+        return service.all();
     }
 
     public void add() {
     }
 
-    public void create() {
+    public void create(@Param("book") Book book) {
+        service.save(book);
+        redirect(String.format("/books"));
     }
 
     public Book show(@Param("id") int id) {
-        return Book.findBy(id);
+        return service.findBy(id);
     }
 
-    public void edit() {
+    public Book edit(@Param("id") int id) {
+        return service.findBy(id);
     }
 
-    public void update() {
+    public void update(@Param("book") Book book) {
     }
 
-    public void destroy() {
+    public void destroy(@Param("id") int id) {
     }
 
 }

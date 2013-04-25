@@ -1,7 +1,19 @@
-<h1>books show</h1>
-<dl>
-    <dt>id</dt>
-    <dd>$book.id</dd>
-    <dt>title</dt>
-    <dd>$book.title</dd>
-</dl>
+<html>
+<head>
+    <title>007 James Bond Books</title>
+</head>
+<body>
+<h2>007 James Bond Books</h2>
+
+<h1>$book.title</h1>
+
+<p>James Bond is the fictional protagonist of a series of novels and short stories, first published in 1953. Bond, often
+    referred to by his code name, 007, is a British Secret Service agent; the character was created by journalist and
+    author Ian Fleming, and first appeared in his 1953 novel, Casino Royale; the books are set in a contemporary period,
+    between May 1951 and February 1964. Fleming went on to write a total of twelve novels and two collections of short
+    stories, all written at his Jamaican home Goldeneye and published annually. Two of his books were published after
+    his death in 1964.</p>
+<a href="../books">back to list</a>
+<a href="$book.id/edit">edit</a>
+</body>
+</html>

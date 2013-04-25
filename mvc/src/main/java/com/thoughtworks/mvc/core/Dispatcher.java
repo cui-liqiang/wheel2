@@ -28,7 +28,7 @@ public class Dispatcher extends HttpServlet {
 
     private void initContainer() throws ServletException {
         try {
-            container = new IocContainerBuilder().withPackageName("app.controllers").build();
+            container = new IocContainerBuilder().withPackageName("app.controllers").withPackageName("app.services").build();
         } catch (Exception e) {
             throw new ServletException("init ioc container fail", e);
         }

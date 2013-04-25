@@ -1,0 +1,14 @@
+<html>
+<head>
+    <title>007 James Bond Books</title>
+</head>
+<body>
+<h1>007 James Bond Books</h1>
+<ul>
+    #foreach( $book in $books )
+        <li><a href="books/$book.id">$book.title</a></li>
+    #end
+</ul>
+<a href="books/new">add</a>
+</body>
+</html>

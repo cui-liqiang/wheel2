@@ -35,9 +35,9 @@ public class BaseController {
     }
 
     private void doRender(String action, Map locals) throws Exception {
-        if(rendered) return;
+        if (rendered) return;
 
-        try{
+        try {
             Context context = new VelocityContext();
             for (Field field : this.getClass().getDeclaredFields()) {
                 field.setAccessible(true);
@@ -45,7 +45,7 @@ public class BaseController {
             }
 
             for (Object key : locals.keySet()) {
-                context.put((String)key, locals.get(key));
+                context.put((String) key, locals.get(key));
             }
 
             getTemplate(action).merge(context, response.getWriter());
@@ -55,10 +55,14 @@ public class BaseController {
         }
     }
 
-    protected void redirect(String action) throws IOException {
+    protected void redirect(String action) {
         String contextPath = request.getContextPath();
         String realPath = contextPath.equals("") ? action : contextPath + action;
-        response.sendRedirect(realPath);
+        try {
+            response.sendRedirect(realPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         rendered = true;
     }
 
