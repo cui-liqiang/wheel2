@@ -5,6 +5,7 @@ import com.thoughtworks.mvc.core.param.Params;
 import com.thoughtworks.mvc.util.DefaultValue;
 import com.thoughtworks.mvc.util.ObjectBindingUtil;
 import core.IocContainer;
+import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -32,12 +33,21 @@ public class ActionDescriptor {
 
         controller.init(req, resp, params);
         Object o = invokeAction(controller, params);
-        if(o == null) {
+        if (o == null) {
             controller.render(action.getName());
         } else {
             Map map = new HashMap();
-            map.put(action.getReturnType().getSimpleName().toLowerCase(), o);
+            map.put(getModelName(), o);
             controller.render(action.getName(), map);
+        }
+    }
+
+    private String getModelName() {
+        if (action.getGenericReturnType() instanceof ParameterizedTypeImpl) {
+            Class returnType = (Class) ((ParameterizedTypeImpl) action.getGenericReturnType()).getActualTypeArguments()[0];
+            return returnType.getSimpleName().toLowerCase() + "s";
+        } else {
+            return action.getReturnType().getSimpleName().toLowerCase();
         }
     }
 
