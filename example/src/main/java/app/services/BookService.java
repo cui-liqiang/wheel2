@@ -29,8 +29,16 @@ public class BookService {
     }
 
     public void save(Book book) {
-        int newId = books.size() + 1;
-        book.setId(newId);
-        books.put(newId, book);
+        if (book.getId() == 0) {
+            int newId = new ArrayList<Integer>(books.keySet()).get(books.size() - 1) + 1;
+            book.setId(newId);
+            books.put(newId, book);
+        } else {
+            books.put(book.getId(), book);
+        }
+    }
+
+    public void deleteBy(int id) {
+        books.remove(id);
     }
 }

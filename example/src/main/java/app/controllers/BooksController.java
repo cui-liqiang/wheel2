@@ -28,7 +28,7 @@ public class BooksController extends BaseController {
 
     public void create(@Param("book") Book book) {
         service.save(book);
-        redirect(String.format("/books"));
+        redirect(pathTo(book));
     }
 
     public Book show(@Param("id") int id) {
@@ -40,9 +40,21 @@ public class BooksController extends BaseController {
     }
 
     public void update(@Param("book") Book book) {
+        service.save(book);
+        redirect(pathTo(book));
     }
 
     public void destroy(@Param("id") int id) {
+        service.deleteBy(id);
+        redirect(pathToIndex());
+    }
+
+    private String pathToIndex() {
+        return "/books";
+    }
+
+    private String pathTo(Book book) {
+        return String.format("/books/%s", book.getId());
     }
 
 }

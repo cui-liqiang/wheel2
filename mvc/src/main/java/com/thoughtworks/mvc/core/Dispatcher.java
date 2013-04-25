@@ -64,6 +64,16 @@ public class Dispatcher extends HttpServlet {
         dispatch(req, resp, HttpMethod.POST);
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatch(req, resp, HttpMethod.PUT);
+    }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        dispatch(req, resp, HttpMethod.DELETE);
+    }
+
     private void dispatch(HttpServletRequest req, HttpServletResponse resp, HttpMethod method) throws IOException, ServletException {
         String url = req.getRequestURI().substring(req.getContextPath().length());
         Route route = routes.get(new SimpleUrlAndVerb(method, url));
