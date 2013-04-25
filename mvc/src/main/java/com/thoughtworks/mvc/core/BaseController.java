@@ -46,6 +46,9 @@ public class BaseController {
 
         try {
             Context context = new VelocityContext();
+            for (Object o : locals.keySet()) {
+                context.put((String)o, locals.get(o));
+            }
             getTemplate(action, mimeType.toString().toLowerCase()).merge(context, response.getWriter());
             response.getWriter().flush();
         } finally {

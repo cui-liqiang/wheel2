@@ -16,29 +16,42 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class ActionDescriptor {
     private final Class controllerClass;
     private final Method action;
-    private List<MimeType> supportedMimes = new ArrayList<MimeType>();
+    private Set<MimeType> supportedMimes = new HashSet<MimeType>();
 
     public ActionDescriptor(Class controllerClass, Method action) {
         this.controllerClass = controllerClass;
         this.action = action;
+        addMimeTypes();
+    }
 
-        Respond responds = action.getAnnotation(Respond.class);
-        if(responds != null) {
-            MimeType[] value = responds.value();
+    private void addMimeTypes() {
+        Respond actionRespond = action.getAnnotation(Respond.class);
+        Respond classRespond = (Respond)controllerClass.getAnnotation(Respond.class);
 
-            for (MimeType mimeType : value) {
-                supportedMimes.add(mimeType);
-            }
-        } else {
+        if(actionRespond == null && classRespond == null) {
             supportedMimes.add(MimeType.HTML);
+            return;
+        }
+
+        if(classRespond != null) {
+            addMimeTypes(classRespond);
+        }
+
+        if(actionRespond != null) {
+            addMimeTypes(actionRespond);
+        }
+    }
+
+    private void addMimeTypes(Respond actionRespond) {
+        MimeType[] value = actionRespond.value();
+
+        for (MimeType mimeType : value) {
+            supportedMimes.add(mimeType);
         }
     }
 
