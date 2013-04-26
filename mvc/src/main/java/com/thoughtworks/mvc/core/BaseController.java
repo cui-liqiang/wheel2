@@ -10,11 +10,12 @@ import org.apache.velocity.context.Context;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BaseController {
+
+    public static final int NOT_FOUND = 404;
 
     private boolean rendered = false;
     private HttpServletRequest request;
@@ -47,7 +48,7 @@ public class BaseController {
         try {
             Context context = new VelocityContext();
             for (Object o : locals.keySet()) {
-                context.put((String)o, locals.get(o));
+                context.put((String) o, locals.get(o));
             }
             getTemplate(action, mimeType.toString().toLowerCase()).merge(context, response.getWriter());
             response.getWriter().flush();

@@ -13,7 +13,7 @@ public abstract class UrlAndVerb {
         Pattern pattern = Pattern.compile("(.*/[^/]*)\\.[A-Za-z]*");
 
         Matcher matcher = pattern.matcher(url);
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             url = matcher.group(1);
         }
 

@@ -1,7 +1,7 @@
-your submission is success! <br />
+your submission is success! <br/>
 
 #foreach ($person in $people)
----------------------------------------------------------------- <br />
-name : $person.name <br />
-age : $person.age <br />
+---------------------------------------------------------------- <br/>
+name : $person.name <br/>
+age : $person.age <br/>
 #end

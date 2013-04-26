@@ -47,7 +47,7 @@ public class Route {
 
     public MimeType getFirstSupportMimeType(Set<MimeType> mimeTypes) {
         for (MimeType mimeType : mimeTypes) {
-            if(descriptor.support(mimeType))
+            if (descriptor.support(mimeType))
                 return mimeType;
         }
         return null;

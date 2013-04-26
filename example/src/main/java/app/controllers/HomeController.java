@@ -11,16 +11,16 @@ import java.util.List;
 import java.util.Map;
 
 @Path("/home")
-public class HomeController extends BaseController{
+public class HomeController extends BaseController {
     private String name;
     private Person person;
 
     @Path("/")
-    public void index(){
+    public void index() {
     }
 
     @Path("/success")
-    public void success(){
+    public void success() {
     }
 
     @Path(value = "/", httpMethod = HttpMethod.POST)

@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Locale;
 
-public class MockHttpServletResponse implements HttpServletResponse{
+public class MockHttpServletResponse implements HttpServletResponse {
     OutputStream outputStream;
     PrintWriter writer;
 

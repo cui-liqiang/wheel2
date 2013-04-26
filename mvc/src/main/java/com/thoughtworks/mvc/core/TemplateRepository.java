@@ -7,7 +7,7 @@ public class TemplateRepository {
     static TemplateRepository instance = null;
 
     public static TemplateRepository getInstance() {
-        if(instance == null)
+        if (instance == null)
             instance = new TemplateRepository();
         return instance;
     }
@@ -16,6 +16,7 @@ public class TemplateRepository {
     public static void setInstance(TemplateRepository otherInstance) {
         instance = otherInstance;
     }
+
     //just for test...
     public static void clearInstance() {
         instance = null;

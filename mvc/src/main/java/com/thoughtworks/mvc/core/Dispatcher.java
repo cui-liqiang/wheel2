@@ -15,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Properties;
-import java.util.Set;
 
 public class Dispatcher extends HttpServlet {
     IocContainer container;
@@ -86,12 +85,12 @@ public class Dispatcher extends HttpServlet {
         }
 
         MimeType mimeType = route.getFirstSupportMimeType(MimeType.getMimeTypes(req));
-        if(mimeType == null) {
+        if (mimeType == null) {
             resp.sendError(406);
             return;
         }
 
         resp.setContentType(mimeType.value());
-        route.exec(req, resp, mimeType,  container);
+        route.exec(req, resp, mimeType, container);
     }
 }

@@ -12,8 +12,9 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
-@Respond({MimeType.HTML})
+
 @Resource
+@Respond({MimeType.HTML})
 public class BooksController extends BaseController {
 
     @Inject
@@ -38,8 +39,8 @@ public class BooksController extends BaseController {
     @Respond({MimeType.JSON})
     public Book show(@Param("id") int id) throws IOException {
         Book book = service.findBy(id);
-        if(book == null) {
-            render(404);
+        if (book == null) {
+            render(NOT_FOUND);
         }
         return book;
     }

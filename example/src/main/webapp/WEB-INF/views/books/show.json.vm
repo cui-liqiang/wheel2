@@ -1,4 +1,4 @@
 {
-    "id":"$book.id",
-    "title":"$book.title"
+    "id": "$book.id",
+    "title": "$book.title"
 }

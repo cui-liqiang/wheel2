@@ -16,7 +16,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ActionDescriptor {
     private final Class controllerClass;
@@ -31,18 +36,18 @@ public class ActionDescriptor {
 
     private void addMimeTypes() {
         Respond actionRespond = action.getAnnotation(Respond.class);
-        Respond classRespond = (Respond)controllerClass.getAnnotation(Respond.class);
+        Respond classRespond = (Respond) controllerClass.getAnnotation(Respond.class);
 
-        if(actionRespond == null && classRespond == null) {
+        if (actionRespond == null && classRespond == null) {
             supportedMimes.add(MimeType.HTML);
             return;
         }
 
-        if(classRespond != null) {
+        if (classRespond != null) {
             addMimeTypes(classRespond);
         }
 
-        if(actionRespond != null) {
+        if (actionRespond != null) {
             addMimeTypes(actionRespond);
         }
     }
@@ -165,7 +170,7 @@ public class ActionDescriptor {
 
     public boolean support(MimeType mimeType) {
         for (MimeType supportedMime : supportedMimes) {
-            if(mimeType.equals(supportedMime))
+            if (mimeType.equals(supportedMime))
                 return true;
         }
         return false;

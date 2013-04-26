@@ -23,7 +23,7 @@ public enum MimeType {
         Set<MimeType> types = new LinkedHashSet<MimeType>();
 
         MimeType type = tryGetFromUrl(req);
-        if(type != null) return newHashSet(type);
+        if (type != null) return newHashSet(type);
 
         types.addAll(tryGetFromHeader(req));
 
@@ -35,7 +35,7 @@ public enum MimeType {
 
         for (String s : req.getHeader("accept").split(",")) {
             for (MimeType mimeType : MimeType.values()) {
-                if(mimeType.matches(s)) {
+                if (mimeType.matches(s)) {
                     types.add(mimeType);
                 }
             }
@@ -49,7 +49,7 @@ public enum MimeType {
 
     private static MimeType tryGetFromUrl(HttpServletRequest req) {
         Matcher matcher = Pattern.compile(".*\\.([A-Za-z]*)").matcher(req.getRequestURI());
-        if(matcher.matches()) {
+        if (matcher.matches()) {
             return MimeType.valueOf(matcher.group(1).toUpperCase());
         }
         return null;
