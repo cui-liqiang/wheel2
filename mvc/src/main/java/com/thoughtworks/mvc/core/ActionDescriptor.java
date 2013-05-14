@@ -1,17 +1,23 @@
 package com.thoughtworks.mvc.core;
 
+import com.sun.xml.internal.ws.util.StringUtils;
 import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Respond;
 import com.thoughtworks.mvc.core.param.Params;
 import com.thoughtworks.mvc.mime.MimeType;
 import com.thoughtworks.mvc.util.DefaultValue;
 import com.thoughtworks.mvc.util.ObjectBindingUtil;
+import com.thoughtworks.mvc.util.StringUtil;
 import core.IocContainer;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.context.Context;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
@@ -61,17 +67,57 @@ public class ActionDescriptor {
     }
 
     public void exec(HttpServletRequest req, HttpServletResponse resp, MimeType mimeType, IocContainer container, Params params) throws Exception {
-        BaseController controller = (BaseController) container.getBean(controllerClass);
+        ControllerContext controllerContext = new ControllerContext(req, resp, mimeType);
 
-        controller.init(req, resp, params, mimeType);
+        Object controller = initController(container, req, resp, params, controllerContext);
         Object o = invokeAction(controller, params);
         if ("void".equals(action.getReturnType().toString())) {
-            controller.render(action.getName());
+            doRender(resp, action.getName(), new HashMap(), controllerContext);
         } else {
             Map map = new HashMap();
             map.put(getModelName(), o);
-            controller.render(action.getName(), map);
+            doRender(resp, action.getName(), map, controllerContext);
         }
+    }
+
+    private Object initController(IocContainer container, HttpServletRequest req, HttpServletResponse resp, Params params, ControllerContext controllerContext) throws Exception {
+        Object controller = container.getBean(controllerClass);
+
+        for (Field field : controller.getClass().getDeclaredFields()) {
+            Class<?> fieldType = field.getType();
+            if (fieldType.equals(HttpServletRequest.class)) {
+                Method setter = controllerClass.getMethod("set" + StringUtils.capitalize(field.getName()), field.getType());
+                setter.invoke(controller, req);
+            } else if (fieldType.equals(HttpServletResponse.class)) {
+                Method setter = controllerClass.getMethod("set" + StringUtils.capitalize(field.getName()), field.getType());
+                setter.invoke(controller, resp);
+            } else if (fieldType.equals(ControllerContext.class)) {
+                Method setter = controllerClass.getMethod("set" + StringUtils.capitalize(field.getName()), field.getType());
+                setter.invoke(controller, controllerContext);
+            }
+        }
+
+        return controller;
+    }
+
+    private void doRender(HttpServletResponse response, String action, Map locals, ControllerContext controllerContext) throws Exception {
+        if (controllerContext.isRendered()) return;
+
+        try {
+            Context context = new VelocityContext();
+            for (Object o : locals.keySet()) {
+                context.put((String) o, locals.get(o));
+            }
+            getTemplate(action, controllerContext.getMimeType().toString().toLowerCase()).merge(context, response.getWriter());
+            response.getWriter().flush();
+        } finally {
+            controllerContext.setRendered(true);
+        }
+    }
+
+    private Template getTemplate(String action, String suffix) throws Exception {
+        String controller = StringUtil.extractControllerName(controllerClass.getName());
+        return TemplateRepository.getInstance().getTemplate(controller, action, suffix);
     }
 
     private String getModelName() {

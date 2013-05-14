@@ -46,6 +46,10 @@ public class Route {
     }
 
     public MimeType getFirstSupportMimeType(Set<MimeType> mimeTypes) {
+        if (mimeTypes == null || mimeTypes.size() == 0) {
+            return MimeType.HTML;
+        }
+
         for (MimeType mimeType : mimeTypes) {
             if (descriptor.support(mimeType))
                 return mimeType;

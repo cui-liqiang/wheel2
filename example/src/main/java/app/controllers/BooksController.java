@@ -5,23 +5,28 @@ import app.services.BookService;
 import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Resource;
 import com.thoughtworks.mvc.annotation.Respond;
-import com.thoughtworks.mvc.core.BaseController;
+import com.thoughtworks.mvc.core.ControllerContext;
 import com.thoughtworks.mvc.mime.MimeType;
 
 import javax.inject.Inject;
 import java.io.IOException;
 import java.util.List;
 
-
 @Resource
 @Respond({MimeType.HTML})
-public class BooksController extends BaseController {
+public class BooksController {
 
     @Inject
     private BookService service;
 
+    private ControllerContext context;
+
     public void setService(BookService service) {
         this.service = service;
+    }
+
+    public void setContext(ControllerContext context) {
+        this.context = context;
     }
 
     public List<Book> index() {
@@ -33,14 +38,14 @@ public class BooksController extends BaseController {
 
     public void create(@Param("book") Book book) {
         service.save(book);
-        redirect(pathTo(book));
+        context.redirect(pathTo(book));
     }
 
     @Respond({MimeType.JSON})
     public Book show(@Param("id") int id) throws IOException {
         Book book = service.findBy(id);
         if (book == null) {
-            render(NOT_FOUND);
+            context.render(404);
         }
         return book;
     }
@@ -51,12 +56,12 @@ public class BooksController extends BaseController {
 
     public void update(@Param("book") Book book) {
         service.save(book);
-        redirect(pathTo(book));
+        context.redirect(pathTo(book));
     }
 
     public void destroy(@Param("id") int id) {
         service.deleteBy(id);
-        string("book is deleted!");
+        context.string("book is deleted!");
     }
 
     private String pathTo(Book book) {

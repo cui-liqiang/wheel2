@@ -1,13 +1,12 @@
 package testpackage.app.controllers;
 
 import com.thoughtworks.mvc.annotation.Path;
-import com.thoughtworks.mvc.core.BaseController;
 import com.thoughtworks.mvc.verb.HttpMethod;
 import core.annotation.Component;
 
 @Component
 @Path("/test")
-public class TestController extends BaseController {
+public class TestController {
 
     String name;
 

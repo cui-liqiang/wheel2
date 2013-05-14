@@ -3,17 +3,22 @@ package app.controllers;
 import app.domains.Person;
 import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Path;
-import com.thoughtworks.mvc.core.BaseController;
+import com.thoughtworks.mvc.core.ControllerContext;
 import com.thoughtworks.mvc.verb.HttpMethod;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Path("/home")
-public class HomeController extends BaseController {
+public class HomeController {
+
     private String name;
     private Person person;
+
+    private ControllerContext context;
+
+    public void setContext(ControllerContext context) {
+        this.context = context;
+    }
 
     @Path("/")
     public void index() {
@@ -25,14 +30,14 @@ public class HomeController extends BaseController {
 
     @Path(value = "/", httpMethod = HttpMethod.POST)
     public void handleSubmit(@Param("people") List<Person> people) throws Exception {
-        Map locals = new HashMap();
-        locals.put("people", people);
-
-        render("success", locals);
+//        Map locals = new HashMap();
+//        locals.put("people", people);
+//
+//        render("success", locals);
     }
 
     @Path(value = "/handle-and-redirect", httpMethod = HttpMethod.POST)
     public void handleAndRedirect() throws Exception {
-        redirect("/home/");
+        context.redirect("/home/");
     }
 }

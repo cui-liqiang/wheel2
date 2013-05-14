@@ -3,10 +3,9 @@ package app.controllers;
 import app.domains.Person;
 import com.thoughtworks.mvc.annotation.Param;
 import com.thoughtworks.mvc.annotation.Path;
-import com.thoughtworks.mvc.core.BaseController;
 
 @Path("/users")
-public class UsersController extends BaseController {
+public class UsersController {
 
     public int id;
 
