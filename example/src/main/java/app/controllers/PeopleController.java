@@ -6,7 +6,6 @@ import com.thoughtworks.mvc.annotation.Resource;
 import com.thoughtworks.mvc.annotation.Respond;
 import com.thoughtworks.mvc.core.ControllerContext;
 import com.thoughtworks.mvc.mime.MimeType;
-import com.thoughtworks.orm.core.DB;
 import com.thoughtworks.orm.core.IDB;
 
 import javax.inject.Inject;
@@ -20,7 +19,7 @@ public class PeopleController {
     IDB db;
 
     public void create(@Param("person") Person person) throws Exception {
-        DB.connect("product").save(person);
+        db.save(person);
         context.redirect(pathTo(person));
     }
 

@@ -27,7 +27,17 @@ project(":example") {
     apply plugin: 'jetty'
 
     dependencies {
-        compile project(':mvc'), files('lib/wheel3.jar')
+        compile project(':mvc'), project(':orm')
         runtime 'mysql:mysql-connector-java:5.1.24'
     }
 }
+
+project(":orm") {
+    dependencies {
+        compile 'com.google.guava:guava:14.0.1', 'dom4j:dom4j:1.6.1', 'javax.servlet:servlet-api:3.0-alpha-1'
+        testCompile 'junit:junit:4.11'
+        testCompile 'org.mockito:mockito-all:1.9.5'
+        runtime 'mysql:mysql-connector-java:5.1.24'
+    }
+}
+

@@ -1,9 +1,22 @@
 package app.domains;
 
+import com.thoughtworks.orm.annotation.BelongsTo;
+
 public class Phone {
     private int country;
     private int province;
     private int rest;
+
+    @BelongsTo
+    public Person getPerson() {
+        return person;
+    }
+
+    public void setPerson(Person person) {
+        this.person = person;
+    }
+
+    private Person person;
 
     public int getCountry() {
         return country;

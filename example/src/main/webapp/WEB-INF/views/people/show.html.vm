@@ -1,0 +1,8 @@
+name:$person.name
+age:$person.age
+
+#foreach ($phone in $person.phones)
+country: phone.country
+province: phone.province
+rest: phone.rest
+#end

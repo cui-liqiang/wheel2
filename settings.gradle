@@ -1,1 +1,1 @@
-include 'mvc', 'example'
+include 'mvc', 'example', 'orm'
