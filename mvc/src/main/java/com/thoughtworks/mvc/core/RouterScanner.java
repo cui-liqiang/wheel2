@@ -52,7 +52,7 @@ public class RouterScanner {
 
     private void addMappingsFromControllerTo(String controller, Routes routes) throws Exception {
         Class controllerClass = Class.forName(controller);
-        container.register(controllerClass, true);
+        container.register(controllerClass);
 
         if (controllerClass.isAnnotationPresent(Path.class)) {
             addMappingForEachAction(routes, controllerClass, ((Path) controllerClass.getAnnotation(Path.class)).value());

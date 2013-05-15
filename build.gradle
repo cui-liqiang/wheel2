@@ -27,6 +27,7 @@ project(":example") {
     apply plugin: 'jetty'
 
     dependencies {
-        compile project(':mvc')
+        compile project(':mvc'), files('lib/wheel3.jar')
+        runtime 'mysql:mysql-connector-java:5.1.24'
     }
 }

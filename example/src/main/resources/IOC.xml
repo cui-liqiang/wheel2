@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<beans>
+    <bean id="db" class="com.thoughtworks.orm.core.DBProxy">
+        <constructor-arg value="product" />
+    </bean>
+</beans>

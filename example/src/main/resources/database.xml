@@ -1,0 +1,8 @@
+<dbconfigs>
+    <db name="product">
+        <driver>com.mysql.jdbc.Driver</driver>
+        <connectString>jdbc:mysql://localhost/example</connectString>
+        <username>root</username>
+        <password></password>
+    </db>
+</dbconfigs>

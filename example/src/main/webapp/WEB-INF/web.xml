@@ -8,6 +8,10 @@
         <servlet-class>com.thoughtworks.mvc.core.Dispatcher</servlet-class>
     </servlet>
 
+    <listener>
+        <listener-class>com.thoughtworks.orm.listeners.DatabaseInitListener</listener-class>
+    </listener>
+
     <servlet-mapping>
         <servlet-name>dispatcher</servlet-name>
         <url-pattern>/*</url-pattern>

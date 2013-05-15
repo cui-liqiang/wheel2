@@ -29,7 +29,7 @@ public class Dispatcher extends HttpServlet {
 
     private void initContainer() throws ServletException {
         try {
-            container = new IocContainerBuilder().withPackageName("app.controllers").withPackageName("app.services").build();
+            container = new IocContainerBuilder().withPackageName("app.controllers").withPackageName("app.services").withConfigFile("IOC.xml").build();
         } catch (Exception e) {
             throw new ServletException("init ioc container fail", e);
         }

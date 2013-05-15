@@ -1,0 +1,33 @@
+<html>
+<head>
+    <title>add a new person</title>
+</head>
+<body>
+
+<h1>add</h1>
+
+<form action="../people" method="post">
+    name: <br />
+    <input name="person.name" value=""/>
+    age: <br />
+    <input name="person.age" value=""/>
+    phones: <br />
+    phone1: <br />
+    <input name="person.phone[].country" value=""/> <br />
+    <input name="person.phone[].province" value=""/> <br />
+    <input name="person.phone[].rest" value=""/> <br />
+
+    phone2: <br />
+    <input name="person.phone[].country" value=""/> <br />
+    <input name="person.phone[].province" value=""/> <br />
+    <input name="person.phone[].rest" value=""/> <br />
+
+    phone3: <br />
+    <input name="person.phone[].country" value=""/> <br />
+    <input name="person.phone[].province" value=""/> <br />
+    <input name="person.phone[].rest" value=""/> <br />
+    <input type="submit"/>
+</form>
+<a href="../books">back to list</a>
+</body>
+</html>
